@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Vegalicious</string>
+    <string name="search_hint">Search here...</string>
+    <string name="main_category_section">Category</string>
+    <string name="main_recommended_section">Recommended For You</string>
+    <string name="title_activity_search_results">SearchResults</string>
+</resources>
