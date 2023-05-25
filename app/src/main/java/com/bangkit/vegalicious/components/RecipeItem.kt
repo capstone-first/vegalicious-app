@@ -50,30 +50,30 @@ fun RecipeItem(
 	tags: List<String>,
 	description: String,
 	modifier: Modifier = Modifier,
+	enableTags: Boolean,
 ) {
 	ElevatedCard(
-		modifier = modifier,
+		modifier = modifier.height((if(enableTags)220 else 200).dp),
 		colors = CardDefaults.elevatedCardColors(
 			containerColor = MaterialTheme.colorScheme.surface
 		),
 		onClick = {  }
 	) {
 		Box(
-			modifier = modifier,
 			contentAlignment = Alignment.TopEnd,
 		) {
 			AsyncImage(
 				model = photoUrl,
 				contentDescription = null,
 				contentScale = ContentScale.Crop,
-				modifier = modifier
+				modifier = Modifier
 					.height(120.dp)
 			)
 			
 			IconButton(
 				onClick = { /*TODO*/ },
 				colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.surface),
-				modifier = modifier
+				modifier = Modifier
 					.padding(4.dp)
 					.clip(CircleShape)
 					.size(24.dp)
@@ -81,7 +81,7 @@ fun RecipeItem(
 				Icon(
 					painterResource(id = R.drawable.bookmark_border),
 					contentDescription = null,
-					modifier = modifier
+					modifier = Modifier
 						.size(16.dp)
 				)
 			}
@@ -89,7 +89,6 @@ fun RecipeItem(
 		}
 		
 		Column(
-			modifier = modifier,
 			horizontalAlignment = Alignment.Start
 		) {
 			Text(
@@ -97,26 +96,27 @@ fun RecipeItem(
 				style = MaterialTheme.typography.titleSmall.copy(
 					fontWeight = FontWeight.ExtraBold
 				),
-				modifier = modifier
+				modifier = Modifier
 					.padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 4.dp)
 			)
-			LazyRow(
-				horizontalArrangement = Arrangement.spacedBy(2.dp),
-				contentPadding = PaddingValues(horizontal = 8.dp),
-				modifier = modifier
-			) {
-				items(tags) {
-					Card(
-						colors = CardDefaults.cardColors(
-							containerColor = MaterialTheme.colorScheme.surfaceVariant
-						),
-					) {
-						Text(
-							modifier = modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-							text = it,
-							style = MaterialTheme.typography.labelSmall
-						)
-					
+			if(enableTags) {
+				LazyRow(
+					horizontalArrangement = Arrangement.spacedBy(2.dp),
+					contentPadding = PaddingValues(horizontal = 8.dp),
+				) {
+					items(tags) {
+						Card(
+							colors = CardDefaults.cardColors(
+								containerColor = MaterialTheme.colorScheme.surfaceVariant
+							),
+						) {
+							Text(
+								modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+								text = it,
+								style = MaterialTheme.typography.labelSmall
+							)
+							
+						}
 					}
 				}
 			}
@@ -135,7 +135,7 @@ fun RecipeItem(
 
 @Preview
 @Composable
-fun RecipeItemPreview() {
+fun RecipeItemTruePreview() {
 	VegaliciousTheme {
 		RecipeItem(
 			"Jackfruit Curry",
@@ -146,7 +146,27 @@ fun RecipeItemPreview() {
 				"Indian",
 				"Lunch",
 			),
-			"This recipe was excerpted from 'Chetna's Healthy Indian: Vegetarian' by Chetna Makan."
+			"This recipe was excerpted from 'Chetna's Healthy Indian: Vegetarian' by Chetna Makan.",
+			enableTags = true
+		)
+	}
+}
+
+@Preview
+@Composable
+fun RecipeItemFalsePreview() {
+	VegaliciousTheme {
+		RecipeItem(
+			"Jackfruit Curry",
+			"https://assets.epicurious.com/photos/63b5b03305dd27a0d03a18a6/1:1/w_1920,c_limit/Jackfruit%20curry-RECIPE.jpg",
+			listOf(
+				"Jackfruit",
+				"Curry",
+				"Indian",
+				"Lunch",
+			),
+			"This recipe was excerpted from 'Chetna's Healthy Indian: Vegetarian' by Chetna Makan.",
+			enableTags = false
 		)
 	}
 }

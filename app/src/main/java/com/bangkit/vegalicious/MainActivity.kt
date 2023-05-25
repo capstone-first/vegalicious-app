@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,11 +12,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -42,7 +47,6 @@ class MainActivity : ComponentActivity() {
 			VegaliciousTheme {
 				// A surface container using the 'background' color from the theme
 				Surface(
-					modifier = Modifier.fillMaxSize(),
 					color = MaterialTheme.colorScheme.background
 				) {
 					VegaliciousApp()
@@ -54,7 +58,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun VegaliciousApp() {
-	Column {
+	Column(
+		modifier = Modifier
+			.verticalScroll(rememberScrollState())
+	) {
 		Banner()
 		CategoryRow(listCategory = dummyCategories)
 		RecommendedRow(listRecipes = dummyRecipeCards)
@@ -112,19 +119,33 @@ fun CategoryRowPreview() {
 @Composable
 fun RecommendedRow(
 	listRecipes: List<RecipeCard>,
-	
+	modifier: Modifier = Modifier
 ) {
 	SectionText(title = stringResource(id = R.string.main_recommended_section))
-	LazyVerticalGrid(
-		columns = GridCells.Fixed(2),
+	LazyHorizontalGrid(
+		modifier = modifier.height(420.dp),
+		rows = GridCells.Fixed(2),
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		verticalArrangement = Arrangement.spacedBy(16.dp),
-		contentPadding = PaddingValues(bottom = 16.dp),
-		modifier = Modifier
-			.padding(horizontal = 16.dp)
+		contentPadding = PaddingValues(horizontal = 16.dp),
 	) {
-		items(items = listRecipes, key = { it.id }) {
-			RecipeItem(title = it.title, photoUrl = it.photoUrl, tags = it.tags, description = it.description)
+		items(listRecipes) {
+			RecipeItem(
+				modifier = Modifier
+					.width(200.dp),
+				title = it.title,
+				photoUrl = it.photoUrl,
+				tags = it.tags,
+				description = it.description,
+				enableTags = false)
 		}
+	}
+}
+
+@Preview
+@Composable
+fun RecommendedRowPreview() {
+	VegaliciousTheme() {
+		RecommendedRow(listRecipes = dummyRecipeCards)
 	}
 }

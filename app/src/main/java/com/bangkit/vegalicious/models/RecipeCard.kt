@@ -8,7 +8,7 @@ data class RecipeCard(
 	val description: String,
 )
 
-val dummyRecipeCards = List(10) { index ->
+val dummyRecipeCards = List(30) { index ->
 	RecipeCard(
 		id = index.toString(),
 		title = "Resep $index",
