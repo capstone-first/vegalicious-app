@@ -11,15 +11,15 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SectionText(
 	title: String,
-	modifier: Modifier = Modifier,
+	modifier: Modifier = Modifier
+		.padding(horizontal = 16.dp, vertical = 8.dp),
 ) {
 	Text(
 		text = title,
-		style = MaterialTheme.typography.headlineSmall.copy(
+		style = MaterialTheme.typography.titleLarge.copy(
 			fontWeight = FontWeight.Bold
 		),
 		color = MaterialTheme.colorScheme.primary,
-		modifier = modifier
-			.padding(horizontal = 16.dp, vertical = 8.dp)
+		modifier = modifier,
 	)
 }

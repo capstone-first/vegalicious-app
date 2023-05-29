@@ -4,19 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -33,9 +29,9 @@ import androidx.compose.ui.unit.dp
 import com.bangkit.vegalicious.components.CategoryItem
 import com.bangkit.vegalicious.components.RecipeItem
 import com.bangkit.vegalicious.models.Category
-import com.bangkit.vegalicious.models.RecipeCard
+import com.bangkit.vegalicious.models.Recipe
 import com.bangkit.vegalicious.models.dummyCategories
-import com.bangkit.vegalicious.models.dummyRecipeCards
+import com.bangkit.vegalicious.models.dummyRecipes
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 import com.dicoding.jetcoffee.components.SearchBar
 import com.dicoding.jetcoffee.components.SectionText
@@ -44,7 +40,7 @@ class MainActivity : ComponentActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContent {
-			VegaliciousTheme {
+			VegaliciousTheme(dynamicColor = false) {
 				// A surface container using the 'background' color from the theme
 				Surface(
 					color = MaterialTheme.colorScheme.background
@@ -64,7 +60,7 @@ fun VegaliciousApp() {
 	) {
 		Banner()
 		CategoryRow(listCategory = dummyCategories)
-		RecommendedRow(listRecipes = dummyRecipeCards)
+		RecommendedRow(listRecipes = dummyRecipes)
 	}
 }
 
@@ -72,7 +68,11 @@ fun VegaliciousApp() {
 @Composable
 fun VegaliciousAppPreview() {
 	VegaliciousTheme {
-		VegaliciousApp()
+		Surface(
+			color = MaterialTheme.colorScheme.background
+		) {
+			VegaliciousApp()
+		}
 	}
 }
 
@@ -118,7 +118,7 @@ fun CategoryRowPreview() {
 
 @Composable
 fun RecommendedRow(
-	listRecipes: List<RecipeCard>,
+	listRecipes: List<Recipe>,
 	modifier: Modifier = Modifier
 ) {
 	SectionText(title = stringResource(id = R.string.main_recommended_section))
@@ -145,7 +145,11 @@ fun RecommendedRow(
 @Preview
 @Composable
 fun RecommendedRowPreview() {
-	VegaliciousTheme() {
-		RecommendedRow(listRecipes = dummyRecipeCards)
+	VegaliciousTheme(dynamicColor = false) {
+		Surface(
+		color = MaterialTheme.colorScheme.background
+	) {
+			RecommendedRow(listRecipes = dummyRecipes)
+		}
 	}
 }

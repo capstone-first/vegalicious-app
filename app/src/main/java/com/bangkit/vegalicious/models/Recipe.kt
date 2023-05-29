@@ -6,10 +6,11 @@ data class Recipe(
 	val photoUrl: String,
 	val tags: List<String>,
 	val nutrition: Map<String, Float>,
+	val ingredients: List<String>,
 	val description: String,
 )
 
-val dummyRecipeCards = List(30) { index ->
+val dummyRecipes = List(30) { index ->
 	Recipe(
 		id = index.toString(),
 		title = "Resep $index",
@@ -24,12 +25,21 @@ val dummyRecipeCards = List(30) { index ->
 			"Western",
 			"Eastern"
 		),
+		ingredients = listOf(
+			"A pich of ingredient number 1",
+			"1 cup of lorem ipsum dolor sit amet.",
+			"2 tsp of borax",
+			"3 can of formaline",
+			"10 gram of cyanide",
+			"1000 ton of flours",
+			"Lorem ipsum dolor sit amet amet amet amet amet amettttt",
+		),
 		nutrition = mapOf(
 			"fat" to 1234.2f,
 			"calories" to 23.2f,
 			"protein" to 334.2f,
 			"sodium" to 1110f,
 		),
-		description = "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet."
+		description = "Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet."
 	)
 }

@@ -4,4 +4,5 @@
     <string name="main_category_section">Category</string>
     <string name="main_recommended_section">Recommended For You</string>
     <string name="title_activity_search_results">SearchResults</string>
+    <string name="title_activity_recipe_details">RecipeDetailsActivity</string>
 </resources>
