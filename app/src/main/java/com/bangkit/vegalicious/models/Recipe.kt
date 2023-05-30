@@ -7,6 +7,7 @@ data class Recipe(
 	val tags: List<String>,
 	val nutrition: Map<String, Float>,
 	val ingredients: List<String>,
+	val directions: List<String>,
 	val description: String,
 )
 
@@ -26,13 +27,27 @@ val dummyRecipes = List(30) { index ->
 			"Eastern"
 		),
 		ingredients = listOf(
-			"A pich of ingredient number 1",
+			"A pinch of ingredient number 1",
 			"1 cup of lorem ipsum dolor sit amet.",
-			"2 tsp of borax",
-			"3 can of formaline",
-			"10 gram of cyanide",
+			"2 tsp of lorem",
+			"3 can of ipsum",
+			"10 gram of dolor",
 			"1000 ton of flours",
 			"Lorem ipsum dolor sit amet amet amet amet amet amettttt",
+		),
+		directions = listOf(
+			"Combine all the ingredients for the spice paste in a small blender and blitz until smooth. You could also use a pestle and mortar, as I sometimes do. Set the spice paste aside while you start the curry.",
+			"Heat the oil in a pan and add the bay leaf, dried red chiles and cumin seeds. When they start to sizzle, add the onions and cook on a low-to-medium heat for 12–15 minutes, until deep golden brown.",
+			"Add the salt, turmeric and jackfruit, mixing well. Cover and cook for 10 minutes, until the jackfruit has taken on all the flavors of the sauce. Stir in the garam masala and sugar and it’s ready to serve.",
+			"Combine all the ingredients for the spice paste in a small blender and blitz until smooth. You could also use a pestle and mortar, as I sometimes do. Set the spice paste aside while you start the curry.",
+			"Combine all the ingredients for the spice paste in a small blender and blitz until smooth. You could also use a pestle and mortar, as I sometimes do. Set the spice paste aside while you start the curry.",
+			"Heat the oil in a pan and add the bay leaf, dried red chiles and cumin seeds. When they start to sizzle, add the onions and cook on a low-to-medium heat for 12–15 minutes, until deep golden brown.",
+			"Add the salt, turmeric and jackfruit, mixing well. Cover and cook for 10 minutes, until the jackfruit has taken on all the flavors of the sauce. Stir in the garam masala and sugar and it’s ready to serve.",
+			"Combine all the ingredients for the spice paste in a small blender and blitz until smooth. You could also use a pestle and mortar, as I sometimes do. Set the spice paste aside while you start the curry.",
+			"Combine all the ingredients for the spice paste in a small blender and blitz until smooth. You could also use a pestle and mortar, as I sometimes do. Set the spice paste aside while you start the curry.",
+			"Heat the oil in a pan and add the bay leaf, dried red chiles and cumin seeds. When they start to sizzle, add the onions and cook on a low-to-medium heat for 12–15 minutes, until deep golden brown.",
+			"Add the salt, turmeric and jackfruit, mixing well. Cover and cook for 10 minutes, until the jackfruit has taken on all the flavors of the sauce. Stir in the garam masala and sugar and it’s ready to serve.",
+			"Combine all the ingredients for the spice paste in a small blender and blitz until smooth. You could also use a pestle and mortar, as I sometimes do. Set the spice paste aside while you start the curry.",
 		),
 		nutrition = mapOf(
 			"fat" to 1234.2f,

@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -67,6 +68,7 @@ fun RecipeDetailsApp() {
 		contentAlignment = Alignment.TopCenter,
 		modifier = Modifier
 			.verticalScroll(rememberScrollState())
+			.padding(bottom = 180.dp),
 	) {
 		Header(photoUrl = data.photoUrl)
 		Column(
@@ -78,6 +80,7 @@ fun RecipeDetailsApp() {
 			TitleRow(data)
 			NutritionFactsRow(data = data.nutrition)
 			IngredientsRow(data.ingredients)
+			DirectionsRow(data.directions)
 		}
 	}
 }
@@ -228,6 +231,37 @@ fun IngredientsRow(ingredients: List<String>) {
 						.padding(top = 8.dp)
 						.fillMaxWidth(),
 					style = MaterialTheme.typography.bodyMedium
+				)
+			}
+		}
+	}
+}
+
+@Composable
+fun DirectionsRow(directions: List<String>) {
+	ElevatedCard(
+		modifier = Modifier
+			.fillMaxWidth(),
+		colors = CardDefaults.elevatedCardColors(
+			containerColor = MaterialTheme.colorScheme.background
+		),
+	) {
+		Column(
+			modifier = Modifier
+				.padding(horizontal = 24.dp, vertical = 16.dp)
+				.fillMaxWidth()
+		) {
+			SectionText(title = "Directions", modifier = Modifier)
+			for(item in directions) {
+				Text(
+					text = item,
+					modifier = Modifier
+						.padding(top = 8.dp)
+						.fillMaxWidth(),
+					style = MaterialTheme.typography.bodyMedium
+				)
+				Divider(
+					Modifier.padding(top = 8.dp)
 				)
 			}
 		}
