@@ -1,4 +1,4 @@
-package com.bangkit.vegalicious
+package com.bangkit.vegalicious.screens.home
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -26,14 +26,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.components.CategoryItem
 import com.bangkit.vegalicious.components.RecipeItem
+import com.bangkit.vegalicious.components.SearchBar
 import com.bangkit.vegalicious.models.Category
 import com.bangkit.vegalicious.models.Recipe
 import com.bangkit.vegalicious.models.dummyCategories
 import com.bangkit.vegalicious.models.dummyRecipes
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
-import com.dicoding.jetcoffee.components.SearchBar
 import com.dicoding.jetcoffee.components.SectionText
 
 class MainActivity : ComponentActivity() {

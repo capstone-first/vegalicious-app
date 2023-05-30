@@ -1,6 +1,7 @@
-package com.dicoding.jetcoffee.components
+package com.bangkit.vegalicious.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,6 +11,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -49,8 +51,39 @@ fun SearchBar(
 		modifier = modifier
 			.padding(16.dp)
 			.fillMaxWidth()
-			.heightIn(min = 48.dp)
-			.clip(RoundedCornerShape(16.dp)),
+			.heightIn(min = 48.dp),
+		shape = RoundedCornerShape(27.dp)
+	)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OutlinedSearchBar(
+	modifier: Modifier = Modifier,
+) {
+	OutlinedTextField(
+		value = "",
+		onValueChange = {  },
+		modifier = modifier
+			.fillMaxWidth()
+			.height(56.dp),
+		placeholder = {
+			Text(
+				text = stringResource(R.string.search_hint),
+				style = MaterialTheme.typography.bodyMedium
+			)
+		},
+		leadingIcon = {
+			Icon(
+				imageVector = Icons.Default.Search,
+				contentDescription = null,
+				modifier = Modifier.height(48.dp)
+			)
+		},
+		colors = TextFieldDefaults.textFieldColors(
+			containerColor = MaterialTheme.colorScheme.surface,
+		),
+		shape = RoundedCornerShape(24.dp)
 	)
 }
 

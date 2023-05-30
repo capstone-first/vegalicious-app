@@ -55,7 +55,7 @@ fun RecipeItem(
 	ElevatedCard(
 		modifier = modifier.height((if(enableTags)220 else 200).dp),
 		colors = CardDefaults.elevatedCardColors(
-			containerColor = MaterialTheme.colorScheme.surface
+			containerColor = MaterialTheme.colorScheme.background
 		),
 		onClick = {  }
 	) {
