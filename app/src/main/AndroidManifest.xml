@@ -15,6 +15,16 @@
         android:theme="@style/Theme.Vegalicious"
         tools:targetApi="31">
         <activity
+            android:name=".screens.auth.signup.SignUpActivity"
+            android:exported="false"
+            android:label="@string/title_activity_sign_up"
+            android:theme="@style/Theme.Vegalicious" />
+        <activity
+            android:name=".screens.auth.login.LoginActivity"
+            android:exported="false"
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.Vegalicious" />
+        <activity
             android:name=".screens.favorite.FavoriteActivity"
             android:exported="false"
             android:label="@string/title_activity_favorite"
