@@ -1,14 +1,12 @@
-package com.bangkit.vegalicious.screens.home
+package com.bangkit.vegalicious.ui.screen.home
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -20,59 +18,94 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.components.CategoryItem
 import com.bangkit.vegalicious.components.RecipeItem
 import com.bangkit.vegalicious.components.SearchBar
+import com.bangkit.vegalicious.components.SectionText
 import com.bangkit.vegalicious.models.Category
+import com.bangkit.vegalicious.models.FakeRecipes
 import com.bangkit.vegalicious.models.Recipe
 import com.bangkit.vegalicious.models.dummyCategories
-import com.bangkit.vegalicious.models.dummyRecipes
+import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
-import com.dicoding.jetcoffee.components.SectionText
+import com.bangkit.vegalicious.utils.Injection
+import com.bangkit.vegalicious.utils.ViewModelFactory
 
-class MainActivity : ComponentActivity() {
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setContent {
-			VegaliciousTheme(dynamicColor = false) {
-				// A surface container using the 'background' color from the theme
-				Surface(
-					color = MaterialTheme.colorScheme.background
-				) {
-					VegaliciousApp()
+@Composable
+fun HomeScreen(
+	viewModel: HomeViewModel = viewModel(
+		factory = ViewModelFactory(
+			Injection.provideRecipeRepository(),
+			Injection.provideCategoryRepository()
+		)
+	),
+	navigateToDetail: (String) -> Unit,
+	navigateToSearch: (String, List<String>) -> Unit,
+) {
+
+	Column(
+		modifier = Modifier
+			.verticalScroll(rememberScrollState())
+			.padding(bottom = 16.dp)
+	) {
+		Banner()
+		SectionText(title = stringResource(id = R.string.main_category_section))
+		
+		viewModel.uiStateCategory.collectAsState(initial = UiState.Loading).value.let { uiState ->
+			when(uiState) {
+				is UiState.Loading -> {
+					viewModel.getTopCategories()
+				}
+				is UiState.Success -> {
+					CategoryRow(listCategory = uiState.data, navigateToSearch = navigateToSearch)
+				}
+				is UiState.Error -> {
+				
+				}
+			}
+		}
+		
+		SectionText(title = stringResource(id = R.string.main_recommended_section))
+		viewModel.uiStateRecipe.collectAsState(initial = UiState.Loading).value.let { uiState ->
+			when(uiState) {
+				is UiState.Loading -> {
+					viewModel.getAllRecipes()
+				}
+				is UiState.Success -> {
+					RecommendedRow(listRecipes = uiState.data, navigateToDetail = navigateToDetail,)
+				}
+				is UiState.Error -> {
+				
 				}
 			}
 		}
 	}
 }
 
-@Composable
-fun VegaliciousApp() {
-	Column(
-		modifier = Modifier
-			.verticalScroll(rememberScrollState())
-	) {
-		Banner()
-		CategoryRow(listCategory = dummyCategories)
-		RecommendedRow(listRecipes = dummyRecipes)
-	}
-}
-
 @Preview
 @Composable
-fun VegaliciousAppPreview() {
+fun HomeScreenPreview() {
 	VegaliciousTheme {
 		Surface(
 			color = MaterialTheme.colorScheme.background
 		) {
-			VegaliciousApp()
+			HomeScreen(
+				navigateToDetail = {
+				
+				},
+				navigateToSearch = { _, _ ->
+				
+				}
+			)
 		}
 	}
 }
@@ -95,16 +128,23 @@ fun Banner(
 @Composable
 fun CategoryRow(
 	listCategory: List<Category>,
+	navigateToSearch: (String, List<String>) -> Any,
 	modifier: Modifier = Modifier
 ) {
-	SectionText(title = stringResource(id = R.string.main_category_section))
 	LazyRow(
 		horizontalArrangement = Arrangement.spacedBy(8.dp),
 		contentPadding = PaddingValues(horizontal = 16.dp),
 		modifier = modifier,
 	) {
-		items(listCategory) {
-			CategoryItem(title = it.title, photoUrl = "https://assets.epicurious.com/photos/63b5b03305dd27a0d03a18a6/1:1/w_1920,c_limit/Jackfruit%20curry-RECIPE.jpg")
+		items(listCategory) { category ->
+			CategoryItem(
+				title = category.title,
+				photoUrl = "https://assets.epicurious.com/photos/63b5b03305dd27a0d03a18a6/1:1/w_1920,c_limit/Jackfruit%20curry-RECIPE.jpg",
+				onClick = {
+					val tag = listOf(category.title)
+					navigateToSearch("", tag)
+				}
+			)
 		}
 	}
 }
@@ -112,17 +152,17 @@ fun CategoryRow(
 @Preview
 @Composable
 fun CategoryRowPreview() {
-	VegaliciousTheme() {
-		CategoryRow(listCategory = dummyCategories)
+	VegaliciousTheme {
+		CategoryRow(listCategory = dummyCategories, { _, _ -> })
 	}
 }
 
 @Composable
 fun RecommendedRow(
 	listRecipes: List<Recipe>,
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier,
+	navigateToDetail: (String) -> Any,
 ) {
-	SectionText(title = stringResource(id = R.string.main_recommended_section))
 	LazyHorizontalGrid(
 		modifier = modifier.height(420.dp),
 		rows = GridCells.Fixed(2),
@@ -133,12 +173,14 @@ fun RecommendedRow(
 		items(listRecipes) {
 			RecipeItem(
 				modifier = Modifier
-					.width(200.dp),
+					.width(180.dp),
 				title = it.title,
 				photoUrl = it.photoUrl,
 				tags = it.tags,
 				description = it.description,
-				enableTags = false)
+				enableTags = false,
+				onClick = { navigateToDetail(it.id) }
+			)
 		}
 	}
 }
@@ -148,9 +190,14 @@ fun RecommendedRow(
 fun RecommendedRowPreview() {
 	VegaliciousTheme(dynamicColor = false) {
 		Surface(
-		color = MaterialTheme.colorScheme.background
-	) {
-			RecommendedRow(listRecipes = dummyRecipes)
+			color = MaterialTheme.colorScheme.background
+		) {
+			RecommendedRow(
+				listRecipes = FakeRecipes.dummyRecipes,
+				navigateToDetail = {
+				
+				},
+			)
 		}
 	}
 }

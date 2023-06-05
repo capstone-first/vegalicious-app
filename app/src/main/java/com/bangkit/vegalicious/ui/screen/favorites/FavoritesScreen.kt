@@ -1,8 +1,5 @@
-package com.bangkit.vegalicious.screens.favorite
+package com.bangkit.vegalicious.ui.screen.favorites
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,29 +17,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.components.RecipeItem
-import com.bangkit.vegalicious.models.dummyRecipes
+import com.bangkit.vegalicious.components.SectionText
+import com.bangkit.vegalicious.models.FakeRecipes.dummyRecipes
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
-import com.dicoding.jetcoffee.components.SectionText
-
-class FavoriteActivity : ComponentActivity() {
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setContent {
-			VegaliciousTheme {
-				// A surface container using the 'background' color from the theme
-				Surface(
-					modifier = Modifier.fillMaxSize(),
-					color = MaterialTheme.colorScheme.background
-				) {
-					FavoriteApp()
-				}
-			}
-		}
-	}
-}
 
 @Composable
-fun FavoriteApp() {
+fun FavoritesScreen() {
 	val data = dummyRecipes
 	LazyVerticalGrid(
 		columns = GridCells.Fixed(2),
@@ -62,7 +42,7 @@ fun FavoriteApp() {
 				photoUrl = it.photoUrl,
 				tags = it.tags,
 				description = it.description,
-				enableTags = false
+				enableTags = true
 			)
 		}
 	}
@@ -70,14 +50,14 @@ fun FavoriteApp() {
 
 @Preview(showBackground = true)
 @Composable
-fun FavoriteAppPreview() {
+fun FavoritesScreenPreview() {
 	VegaliciousTheme {
 		// A surface container using the 'background' color from the theme
 		Surface(
 			modifier = Modifier.fillMaxSize(),
 			color = MaterialTheme.colorScheme.background
 		) {
-			FavoriteApp()
+			FavoritesScreen()
 		}
 	}
 }

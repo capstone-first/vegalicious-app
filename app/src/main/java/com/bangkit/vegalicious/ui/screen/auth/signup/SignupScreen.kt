@@ -1,8 +1,5 @@
-package com.bangkit.vegalicious.screens.auth.signup
+package com.bangkit.vegalicious.ui.screen.auth.signup
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,26 +34,10 @@ import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.components.AnnotatedClickableText
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 
-class LoginActivity : ComponentActivity() {
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setContent {
-			VegaliciousTheme {
-				// A surface container using the 'background' color from the theme
-				Surface(
-					modifier = Modifier.fillMaxSize(),
-					color = MaterialTheme.colorScheme.background
-				) {
-					SignUpApp()
-				}
-			}
-		}
-	}
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpApp(modifier: Modifier = Modifier) {
+fun SignupScreen(modifier: Modifier = Modifier) {
 	var emailInput by remember { mutableStateOf("") }
 	var passwordInput by remember { mutableStateOf("")}
 	var confirmPasswordInput by remember { mutableStateOf("")}
@@ -155,13 +135,13 @@ fun SignUpApp(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun SignUpAppPreview() {
+fun SignupScreenPreview() {
 	VegaliciousTheme {
 		Surface(
 			modifier = Modifier.fillMaxSize(),
 			color = MaterialTheme.colorScheme.background
 		) {
-			SignUpApp()
+			SignupScreen()
 		}
 	}
 }

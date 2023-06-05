@@ -51,13 +51,14 @@ fun RecipeItem(
 	description: String,
 	modifier: Modifier = Modifier,
 	enableTags: Boolean,
+	onClick: () -> Unit = {},
 ) {
 	ElevatedCard(
 		modifier = modifier.height((if(enableTags)220 else 200).dp),
 		colors = CardDefaults.elevatedCardColors(
 			containerColor = MaterialTheme.colorScheme.background
 		),
-		onClick = {  }
+		onClick = onClick
 	) {
 		Box(
 			contentAlignment = Alignment.TopEnd,
@@ -125,7 +126,7 @@ fun RecipeItem(
 				style = MaterialTheme.typography.bodySmall,
 				maxLines = 2,
 				overflow = TextOverflow.Ellipsis,
-				modifier = modifier
+				modifier = Modifier
 					.padding(top = 4.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)
 			)
 		}

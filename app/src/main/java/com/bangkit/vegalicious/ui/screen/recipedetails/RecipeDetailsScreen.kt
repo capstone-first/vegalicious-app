@@ -1,8 +1,5 @@
-package com.bangkit.vegalicious.screens.recipedetails
+package com.bangkit.vegalicious.ui.screen.recipedetails
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,50 +34,55 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.bangkit.vegalicious.components.SectionText
 import com.bangkit.vegalicious.models.Recipe
-import com.bangkit.vegalicious.models.dummyRecipes
+import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
-import com.dicoding.jetcoffee.components.SectionText
-
-class RecipeDetailsActivity : ComponentActivity() {
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setContent {
-			VegaliciousTheme(dynamicColor = false) {
-				// A surface container using the 'background' color from the theme
-				Surface(
-					modifier = Modifier.fillMaxSize(),
-					color = MaterialTheme.colorScheme.surface
-				) {
-					RecipeDetailsApp()
-				}
-			}
-		}
-	}
-}
+import com.bangkit.vegalicious.utils.Injection
+import com.bangkit.vegalicious.utils.ViewModelFactory
 
 @Composable
-fun RecipeDetailsApp() {
-	val data = dummyRecipes[0]
-	
-	Box(
-		contentAlignment = Alignment.TopCenter,
-		modifier = Modifier
-			.verticalScroll(rememberScrollState())
-			.padding(bottom = 180.dp),
-	) {
-		Header(photoUrl = data.photoUrl)
-		Column(
-			modifier = Modifier
-				.padding(horizontal = 16.dp)
-				.offset(y = 170.dp),
-			verticalArrangement = Arrangement.spacedBy(16.dp),
-		) {
-			TitleRow(data)
-			NutritionFactsRow(data = data.nutrition)
-			IngredientsRow(data.ingredients)
-			DirectionsRow(data.directions)
+fun RecipeDetailsScreen(
+	viewModel: RecipeDetailsViewModel = viewModel(
+		factory = ViewModelFactory(
+			Injection.provideRecipeRepository()
+		)
+	),
+	recipeId: String,
+	navigateBack: () -> Unit,
+) {
+	viewModel.uiState.collectAsState(initial = UiState.Loading).value.let {
+		when(it) {
+			is UiState.Loading -> {
+				viewModel.getRecipeById(recipeId)
+			}
+			is UiState.Success -> {
+				val data = it.data
+				Box(
+					contentAlignment = Alignment.TopCenter,
+					modifier = Modifier
+						.verticalScroll(rememberScrollState())
+						.padding(bottom = 180.dp),
+				) {
+					Header(photoUrl = data.photoUrl)
+					Column(
+						modifier = Modifier
+							.padding(horizontal = 16.dp)
+							.offset(y = 170.dp),
+						verticalArrangement = Arrangement.spacedBy(16.dp),
+					) {
+						TitleRow(data)
+						NutritionFactsRow(data = data.nutrition)
+						IngredientsRow(data.ingredients)
+						DirectionsRow(data.directions)
+					}
+				}
+			}
+			is UiState.Error -> {
+			
+			}
 		}
 	}
 }
@@ -269,13 +272,18 @@ fun DirectionsRow(directions: List<String>) {
 
 @Preview
 @Composable
-fun RecipeDetailsAppPreview() {
+fun RecipeDetailsScreenPreview() {
 	VegaliciousTheme(dynamicColor = false) {
 		Surface(
 			modifier = Modifier.fillMaxSize(),
 			color = MaterialTheme.colorScheme.surface
 		) {
-			RecipeDetailsApp()
+			RecipeDetailsScreen(
+				recipeId = "0",
+				navigateBack = {
+				
+				}
+			)
 		}
 	}
 }

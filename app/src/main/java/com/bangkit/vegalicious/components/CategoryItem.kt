@@ -1,6 +1,7 @@
 package com.bangkit.vegalicious.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -25,10 +26,14 @@ fun CategoryItem(
 	title: String,
 	photoUrl: String,
 	modifier: Modifier = Modifier,
-) {
+	onClick: () -> Unit,
+	) {
 	Box(
 		contentAlignment = Alignment.Center,
 		modifier = modifier
+			.clickable {
+				onClick()
+			}
 			.width(160.dp)
 			.height(80.dp)
 			.clip(RoundedCornerShape(8.dp))
@@ -58,6 +63,10 @@ fun CategoryItem(
 @Composable
 fun CategoryItemPreview() {
 	VegaliciousTheme {
-		CategoryItem("Indian", "https://assets.epicurious.com/photos/63b5b03305dd27a0d03a18a6/1:1/w_1920,c_limit/Jackfruit%20curry-RECIPE.jpg")
+		CategoryItem(
+			"Indian",
+			"https://assets.epicurious.com/photos/63b5b03305dd27a0d03a18a6/1:1/w_1920,c_limit/Jackfruit%20curry-RECIPE.jpg",
+			onClick = {},
+		)
 	}
 }

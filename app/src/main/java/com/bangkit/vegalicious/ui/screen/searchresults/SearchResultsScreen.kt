@@ -1,4 +1,4 @@
-package com.bangkit.vegalicious.screens.searchresults
+package com.bangkit.vegalicious.ui.screen.searchresults
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -33,34 +33,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bangkit.vegalicious.components.OutlinedSearchBar
 import com.bangkit.vegalicious.components.RecipeItem
-import com.bangkit.vegalicious.models.dummyRecipes
+import com.bangkit.vegalicious.models.FakeRecipes.dummyRecipes
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 
-class SearchResults : ComponentActivity() {
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-		setContent {
-			VegaliciousTheme {
-				// A surface container using the 'background' color from the theme
-				Surface(
-					modifier = Modifier.fillMaxSize(),
-					color = MaterialTheme.colorScheme.background
-				) {
-					SearchResultsApp()
-				}
-			}
-		}
-	}
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchResultsApp() {
+fun SearchResultsScreen(
+	query: String,
+	tags: List<String>
+) {
 	Scaffold(
 		topBar = { AppBar() }
 	) {
 		val data = dummyRecipes
-		val query = "resep"
 		LazyVerticalGrid(
 			columns = GridCells.Fixed(2),
 			verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -71,7 +57,7 @@ fun SearchResultsApp() {
 		) {
 			item(span = { GridItemSpan(maxCurrentLineSpan) }) {
 				Text(
-					text = "Search results for \"$query\"",
+					text = "Search results" + if(query != "") { " for \"$query\":" } else {":"},
 					style = MaterialTheme.typography.titleMedium.copy(
 						fontWeight = FontWeight.Bold
 					),
@@ -88,7 +74,7 @@ fun SearchResultsApp() {
 					photoUrl = it.photoUrl,
 					tags = it.tags,
 					description = it.description,
-					enableTags = false
+					enableTags = true
 				)
 			}
 		}
@@ -142,14 +128,14 @@ fun AppBarPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun SearchResultsPreview() {
+fun SearchResultsScreenPreview() {
 	VegaliciousTheme {
 		// A surface container using the 'background' color from the theme
 		Surface(
 			modifier = Modifier.fillMaxSize(),
 			color = MaterialTheme.colorScheme.background
 		) {
-			SearchResultsApp()
+			SearchResultsScreen("Resep", listOf())
 		}
 	}
 }
