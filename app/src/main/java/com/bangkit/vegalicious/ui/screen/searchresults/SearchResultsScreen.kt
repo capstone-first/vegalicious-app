@@ -1,6 +1,7 @@
 package com.bangkit.vegalicious.ui.screen.searchresults
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -40,13 +45,27 @@ import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchResultsScreen(
-	query: String,
-	tags: List<String>
+	query: String = "",
+	_tags: List<String> = listOf(),
+	onSearch: (String, List<String>) -> Unit
 ) {
+	Log.e("SearchResultsScreen", "After search: $query")
+	var input by remember { mutableStateOf(query) }
+	var tags by remember { mutableStateOf(_tags) }
 	Scaffold(
-		topBar = { AppBar() }
+		topBar = { AppBar(
+			input = input,
+			onValueChange = { newValue ->
+				input = newValue
+			},
+			onSearch = {
+				Log.d("Before", "Before search: $input")
+				onSearch(input, tags)
+			}
+		) }
 	) {
 		val data = dummyRecipes
+		
 		LazyVerticalGrid(
 			columns = GridCells.Fixed(2),
 			verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -57,13 +76,14 @@ fun SearchResultsScreen(
 		) {
 			item(span = { GridItemSpan(maxCurrentLineSpan) }) {
 				Text(
-					text = "Search results" + if(query != "") { " for \"$query\":" } else {":"},
+					text = if(query != "") { "Search results for \"$query\":" } else {"All recipes:"},
 					style = MaterialTheme.typography.titleMedium.copy(
 						fontWeight = FontWeight.Bold
 					),
 					color = MaterialTheme.colorScheme.primary,
 					modifier = Modifier.padding(top = 8.dp),
 				)
+				Bundle()
 			}
 			
 			items(data) {
@@ -84,6 +104,9 @@ fun SearchResultsScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
+	input: String = "",
+	onValueChange: (String) -> Unit = {},
+	onSearch: () -> Unit = {}
 ) {
 	TopAppBar(
 		title = {
@@ -91,7 +114,7 @@ fun AppBar(
 		},
 		actions = {
 			Row (
-				modifier = Modifier.padding(start = 8.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
+				modifier = Modifier.padding(start = 8.dp, end = 16.dp),
 				verticalAlignment = Alignment.CenterVertically
 					) {
 				IconButton(
@@ -99,12 +122,16 @@ fun AppBar(
 					Modifier.padding(0.dp)
 				) {
 					Icon(Icons.Default.ArrowBack, contentDescription = null,
-						Modifier.size(32.dp))
+						Modifier.size(28.dp))
 				}
-				OutlinedSearchBar()
+				OutlinedSearchBar(
+					value = input,
+					onValueChange = onValueChange,
+					onSearch = onSearch
+				)
 			}
 		},
-		modifier = Modifier.height(64.dp)
+		modifier = Modifier.padding(vertical = 8.dp)
 	)
 	
 //	Surface(
@@ -122,7 +149,7 @@ fun AppBar(
 @Composable
 fun AppBarPreview() {
 	VegaliciousTheme {
-		AppBar()
+		AppBar("Resep")
 	}
 }
 
@@ -135,7 +162,7 @@ fun SearchResultsScreenPreview() {
 			modifier = Modifier.fillMaxSize(),
 			color = MaterialTheme.colorScheme.background
 		) {
-			SearchResultsScreen("Resep", listOf())
+			SearchResultsScreen("Resep", listOf(), {_, _ ->})
 		}
 	}
 }

@@ -1,18 +1,23 @@
 package com.bangkit.vegalicious.ui.navigation
 
+import android.util.Log
+
 sealed class Screen(val route: String) {
 	
 	object Home : Screen("home")
-	object Search : Screen("search?q={query}&tag1={tag1}&tag2={tag2}&tag3={tag3}") {
-		fun createSearchRoute(query: String? = null, tags: List<String> = listOf()): String {
-			val route = if(query != null) "search?q=$query" else "search?"
+	object Search : Screen("search?q={q}&tag1={tag1}&tag2={tag2}&tag3={tag3}") {
+		fun createSearchRoute(query: String, tags: List<String> = listOf()): String {
+			Log.d("TEST", "TEST START")
+			val route = "search?q=$query"
 			
 			val sb = StringBuilder().append(route)
 			
-			val i = 1
+			var i = 1
 			for(tag in tags) {
-				sb.append("&tag$i=tag")
+				sb.append("&tag$i=$tag")
+				i++
 			}
+			Log.e("CreateSearchRoute", sb.toString())
 			return sb.toString()
 		}
 	}
@@ -21,7 +26,7 @@ sealed class Screen(val route: String) {
 	object DetailRecipe : Screen("home/{recipeId}") {
 		fun createRoute(recipeId: String) = "home/$recipeId"
 	}
-	object Category : Screen("category") {
-		fun createRoute(tag: String) = "search/$tag"
+	object Category : Screen("category/{tag}") {
+		fun createRoute(tag: String) = "category/$tag"
 	}
 }

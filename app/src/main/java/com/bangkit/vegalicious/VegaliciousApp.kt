@@ -1,11 +1,18 @@
 package com.bangkit.vegalicious
 
+import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Bookmark
+import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +34,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.bangkit.vegalicious.ui.navigation.NavigationItem
 import com.bangkit.vegalicious.ui.navigation.Screen
+import com.bangkit.vegalicious.ui.screen.category.CategoryScreen
 import com.bangkit.vegalicious.ui.screen.favorites.FavoritesScreen
 import com.bangkit.vegalicious.ui.screen.home.HomeScreen
 import com.bangkit.vegalicious.ui.screen.recipedetails.RecipeDetailsScreen
@@ -53,7 +61,10 @@ fun VegaliciousApp(
 						navController.navigate(Screen.DetailRecipe.createRoute(it))
 					},
 					navigateToSearch = { query, tags ->
-						navController.navigate(Screen.Search.createSearchRoute(query, tags))
+						navController.navigate(Screen.Search.createSearchRoute(query, tags).also{Log.e("CreateSearchRoute", it) })
+					},
+					navigateToCategory = { tag ->
+						navController.navigate(Screen.Category.createRoute(tag.also{Log.e("CreateTagRoute", it)}))
 					}
 				)
 			}
@@ -78,13 +89,20 @@ fun VegaliciousApp(
 					}
 				)
 			) {
-				val query = it.arguments?.getString("q") ?: ""
+				val query = it.arguments?.getString("q").toString()
 				val tags: List<String> = listOfNotNull(
-					it?.arguments?.getString("tag1"),
-					it?.arguments?.getString("tag2"),
-					it?.arguments?.getString("tag3"),
+					it.arguments?.getString("tag1"),
+					it.arguments?.getString("tag2"),
+					it.arguments?.getString("tag3"),
 				)
-				SearchResultsScreen(query, tags)
+				Log.d("CreateSearchRoute", "Query: $query")
+				SearchResultsScreen(
+					query = query,
+					_tags = tags,
+					onSearch = { _q, _t ->
+						navController.navigate(Screen.Search.createSearchRoute(_q, _t).also{Log.d("SearchRoute", "Route: $it")})
+					},
+				)
 			}
 			composable(
 				route = Screen.Favorites.route,
@@ -108,6 +126,15 @@ fun VegaliciousApp(
 					},
 				)
 			}
+			composable(
+				route = Screen.Category.route,
+				arguments = listOf(navArgument("tag"){
+					type = NavType.StringType
+				})
+			) {
+				val tag = it.arguments?.getString("tag") as String
+				CategoryScreen(tag)
+			}
 		}
 	}
 }
@@ -124,46 +151,47 @@ fun BottomBar(
 		val navigationItems = listOf(
 			NavigationItem(
 				title = stringResource(R.string.menu_home),
-				icon = Icons.Default.Home,
+				icon = Icons.Outlined.Home,
 				screen = Screen.Home
 			),
 			NavigationItem(
 				title = stringResource(R.string.menu_search),
-				icon = Icons.Default.Search,
+				icon = Icons.Outlined.Search,
 				screen = Screen.Search
 			),
 			NavigationItem(
 				title = stringResource(R.string.menu_favorites),
-				icon = Icons.Default.Favorite,
+				icon = Icons.Outlined.BookmarkBorder,
 				screen = Screen.Favorites
 			),
 			NavigationItem(
 				title = stringResource(R.string.menu_profile),
-				icon = Icons.Default.AccountCircle,
+				icon = Icons.Outlined.AccountCircle,
 				screen = Screen.Profile
 			),
 		)
 		
-			navigationItems.map { item ->
-				NavigationBarItem(
-					selected = true,
-					onClick = {
-							  navController.navigate(item.screen.route) {
-								  popUpTo(navController.graph.findStartDestination().id) {
-									  saveState = true
-								  }
-								  restoreState = true
-								  launchSingleTop = true
+		navigationItems.map { item ->
+			NavigationBarItem(
+				selected = false,
+				onClick = {
+						  navController.navigate(item.screen.route) {
+							  popUpTo(navController.graph.findStartDestination().id) {
+								  saveState = true
 							  }
-				  		},
-					label = { Text(item.title) },
-					icon = {
-						Icon(
-							imageVector = item.icon,
-							contentDescription = item.title
-						)
-					}
-				)
+							  restoreState = true
+							  launchSingleTop = true
+						  }
+					},
+				
+				label = { Text(item.title) },
+				icon = {
+					Icon(
+						imageVector = item.icon,
+						contentDescription = item.title
+					)
+				}
+			)
 			}
 		
 	}

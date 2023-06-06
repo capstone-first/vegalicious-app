@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.flowOf
 class RecipeRepository {
 	
 	private val recipes = mutableListOf<Recipe>()
-	private val categories = mutableListOf<Category>()
 	init {
 		if(recipes.isEmpty()) {
 			FakeRecipes.dummyRecipes.forEach {
@@ -19,6 +18,10 @@ class RecipeRepository {
 	}
 	
 	fun getAllRecipes(): Flow<List<Recipe>> {
+		return flowOf(recipes)
+	}
+	
+	fun searchRecipes(query: String, tags: List<String>): Flow<List<Recipe>> {
 		return flowOf(recipes)
 	}
 	

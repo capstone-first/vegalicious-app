@@ -50,6 +50,7 @@ fun HomeScreen(
 	),
 	navigateToDetail: (String) -> Unit,
 	navigateToSearch: (String, List<String>) -> Unit,
+	navigateToCategory: (String) -> Unit
 ) {
 
 	Column(
@@ -66,7 +67,7 @@ fun HomeScreen(
 					viewModel.getTopCategories()
 				}
 				is UiState.Success -> {
-					CategoryRow(listCategory = uiState.data, navigateToSearch = navigateToSearch)
+					CategoryRow(listCategory = uiState.data, navigateToCategory = navigateToCategory)
 				}
 				is UiState.Error -> {
 				
@@ -104,7 +105,8 @@ fun HomeScreenPreview() {
 				},
 				navigateToSearch = { _, _ ->
 				
-				}
+				},
+				navigateToCategory = {}
 			)
 		}
 	}
@@ -128,7 +130,7 @@ fun Banner(
 @Composable
 fun CategoryRow(
 	listCategory: List<Category>,
-	navigateToSearch: (String, List<String>) -> Any,
+	navigateToCategory: (String) -> Any,
 	modifier: Modifier = Modifier
 ) {
 	LazyRow(
@@ -141,8 +143,8 @@ fun CategoryRow(
 				title = category.title,
 				photoUrl = "https://assets.epicurious.com/photos/63b5b03305dd27a0d03a18a6/1:1/w_1920,c_limit/Jackfruit%20curry-RECIPE.jpg",
 				onClick = {
-					val tag = listOf(category.title)
-					navigateToSearch("", tag)
+					val tag = category.title
+					navigateToCategory(tag)
 				}
 			)
 		}
@@ -153,7 +155,7 @@ fun CategoryRow(
 @Composable
 fun CategoryRowPreview() {
 	VegaliciousTheme {
-		CategoryRow(listCategory = dummyCategories, { _, _ -> })
+		CategoryRow(listCategory = dummyCategories, {})
 	}
 }
 

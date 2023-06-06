@@ -20,6 +20,10 @@ class CategoryRepository {
 		return flowOf(categories)
 	}
 	
+	fun getAllCategories(): Flow<List<Category>> {
+		return flowOf(categories)
+	}
+	
 	companion object {
 		@Volatile
 		private var instance: CategoryRepository? = null
