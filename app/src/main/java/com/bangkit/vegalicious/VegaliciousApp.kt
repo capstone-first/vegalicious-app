@@ -3,14 +3,8 @@ package com.bangkit.vegalicious
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,11 +28,15 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.bangkit.vegalicious.ui.navigation.NavigationItem
 import com.bangkit.vegalicious.ui.navigation.Screen
+import com.bangkit.vegalicious.ui.screen.auth.login.LoginScreen
+import com.bangkit.vegalicious.ui.screen.auth.signup.SignupScreen
 import com.bangkit.vegalicious.ui.screen.category.CategoryScreen
 import com.bangkit.vegalicious.ui.screen.favorites.FavoritesScreen
 import com.bangkit.vegalicious.ui.screen.home.HomeScreen
+import com.bangkit.vegalicious.ui.screen.profile.ProfileScreen
 import com.bangkit.vegalicious.ui.screen.recipedetails.RecipeDetailsScreen
 import com.bangkit.vegalicious.ui.screen.searchresults.SearchResultsScreen
+import com.bangkit.vegalicious.ui.screen.splash.SplashScreen
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,9 +50,36 @@ fun VegaliciousApp(
 	) { it ->
 		NavHost(
 			navController = navController,
-			startDestination = Screen.Home.route,
+			startDestination = Screen.Splash.route,
 			modifier = Modifier.padding(it),
 		) {
+			composable(Screen.Splash.route) {
+				SplashScreen(
+					navigateToHome = {
+						navController.navigate(Screen.Home.route)
+					},
+					 navigateToLogin =  {
+						navController.navigate(Screen.Login.route)
+					}
+				)
+			}
+			composable(Screen.Login.route) {
+				LoginScreen(
+					navigateToHome = {
+						navController.navigate(Screen.Home.route)
+					},
+					navigateToSignup = {
+						navController.navigate(Screen.Signup.route)
+					}
+				)
+			}
+			composable(Screen.Signup.route) {
+				SignupScreen(
+					navigateToLogin = {
+						navController.navigate(Screen.Login.route)
+					},
+				)
+			}
 			composable(Screen.Home.route) {
 				HomeScreen(
 					navigateToDetail = {
@@ -64,7 +89,7 @@ fun VegaliciousApp(
 						navController.navigate(Screen.Search.createSearchRoute(query, tags).also{Log.e("CreateSearchRoute", it) })
 					},
 					navigateToCategory = { tag ->
-						navController.navigate(Screen.Category.createRoute(tag.also{Log.e("CreateTagRoute", it)}))
+						navController.navigate(Screen.Category.createRoute(tag))
 					}
 				)
 			}
@@ -102,6 +127,9 @@ fun VegaliciousApp(
 					onSearch = { _q, _t ->
 						navController.navigate(Screen.Search.createSearchRoute(_q, _t).also{Log.d("SearchRoute", "Route: $it")})
 					},
+					navigateToDetail = {
+						navController.navigate(Screen.DetailRecipe.createRoute(it))
+					},
 				)
 			}
 			composable(
@@ -110,7 +138,23 @@ fun VegaliciousApp(
 				
 				)
 			) {
-				FavoritesScreen()
+				FavoritesScreen(
+					navigateToDetail = {
+						navController.navigate(Screen.DetailRecipe.createRoute(it))
+					},
+				)
+			}
+			composable(
+				route = Screen.Profile.route,
+				arguments = listOf(navArgument("username") {
+					type = NavType.StringType
+				}),
+			) {
+				val username = it.arguments?.getString("username").toString()
+				ProfileScreen(
+					username = username,
+					onClickLogout = {}
+				)
 			}
 			composable(
 				route = Screen.DetailRecipe.route,
@@ -133,7 +177,12 @@ fun VegaliciousApp(
 				})
 			) {
 				val tag = it.arguments?.getString("tag") as String
-				CategoryScreen(tag)
+				CategoryScreen(
+					tag = tag,
+					navigateToDetail = {
+						navController.navigate(Screen.DetailRecipe.createRoute(it))
+					},
+				)
 			}
 		}
 	}
@@ -164,11 +213,6 @@ fun BottomBar(
 				icon = Icons.Outlined.BookmarkBorder,
 				screen = Screen.Favorites
 			),
-			NavigationItem(
-				title = stringResource(R.string.menu_profile),
-				icon = Icons.Outlined.AccountCircle,
-				screen = Screen.Profile
-			),
 		)
 		
 		navigationItems.map { item ->
@@ -192,10 +236,33 @@ fun BottomBar(
 					)
 				}
 			)
-			}
+		}
 		
+		NavigationBarItem(
+			selected = false,
+			onClick = {
+				navController.navigate(Screen.Profile.createRoute("")) {
+					popUpTo(navController.graph.findStartDestination().id) {
+						saveState = true
+					}
+					restoreState = true
+					launchSingleTop = true
+				}
+			},
+			
+			label = { Text(stringResource(R.string.menu_profile)) },
+			icon = {
+				Icon(
+					imageVector = Icons.Outlined.AccountCircle,
+					contentDescription = stringResource(R.string.menu_profile)
+				)
+			}
+		)
+	
 	}
 }
+
+
 
 @Preview
 @Composable

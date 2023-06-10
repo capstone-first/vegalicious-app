@@ -29,6 +29,10 @@ class RecipeRepository {
 		return recipes.find { it.id == id } as Recipe // This could be null. Jangan lupa cari logika lain.
 	}
 	
+	fun getFavorites(): Flow<List<Recipe>> {
+		return flowOf(recipes)
+	}
+	
 	companion object {
 		@Volatile
 		private var instance: RecipeRepository? = null

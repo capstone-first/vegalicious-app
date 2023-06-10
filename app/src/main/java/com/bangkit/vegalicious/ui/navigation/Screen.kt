@@ -4,6 +4,9 @@ import android.util.Log
 
 sealed class Screen(val route: String) {
 	
+	object Splash : Screen("splash")
+	object Login : Screen("login")
+	object Signup : Screen("signup")
 	object Home : Screen("home")
 	object Search : Screen("search?q={q}&tag1={tag1}&tag2={tag2}&tag3={tag3}") {
 		fun createSearchRoute(query: String, tags: List<String> = listOf()): String {
@@ -22,7 +25,9 @@ sealed class Screen(val route: String) {
 		}
 	}
 	object Favorites : Screen("favorites")
-	object Profile : Screen("profile")
+	object Profile : Screen("profile/{username}") {
+		fun createRoute(username: String) = "profile/$username"
+	}
 	object DetailRecipe : Screen("home/{recipeId}") {
 		fun createRoute(recipeId: String) = "home/$recipeId"
 	}

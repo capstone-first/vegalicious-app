@@ -31,7 +31,8 @@ import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 @Composable
 fun CategoryScreen(
 	tag: String,
-	onBackButton: () -> Unit = {}
+	onBackButton: () -> Unit = {},
+	navigateToDetail: (String) -> Unit,
 ) {
 	val data = dummyRecipes
 	LazyVerticalGrid(
@@ -66,7 +67,8 @@ fun CategoryScreen(
 				photoUrl = it.photoUrl,
 				tags = it.tags,
 				description = it.description,
-				enableTags = true
+				enableTags = true,
+				onClick = { navigateToDetail(it.id) }
 			)
 		}
 	}
@@ -81,7 +83,7 @@ fun FavoritesScreenPreview() {
 			modifier = Modifier.fillMaxSize(),
 			color = MaterialTheme.colorScheme.background
 		) {
-			CategoryScreen("Indian")
+			CategoryScreen("Indian", navigateToDetail = {})
 		}
 	}
 }

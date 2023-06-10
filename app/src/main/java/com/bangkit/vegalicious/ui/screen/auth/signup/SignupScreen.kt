@@ -37,7 +37,10 @@ import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignupScreen(modifier: Modifier = Modifier) {
+fun SignupScreen(
+	modifier: Modifier = Modifier,
+	navigateToLogin: () -> Unit,
+) {
 	var emailInput by remember { mutableStateOf("") }
 	var passwordInput by remember { mutableStateOf("")}
 	var confirmPasswordInput by remember { mutableStateOf("")}
@@ -141,7 +144,7 @@ fun SignupScreenPreview() {
 			modifier = Modifier.fillMaxSize(),
 			color = MaterialTheme.colorScheme.background
 		) {
-			SignupScreen()
+			SignupScreen(navigateToLogin = {})
 		}
 	}
 }

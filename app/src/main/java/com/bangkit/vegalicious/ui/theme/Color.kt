@@ -62,6 +62,11 @@ val md_theme_dark_surfaceTint = Color(0xFF61DE87)
 val md_theme_dark_outlineVariant = Color(0xFF414941)
 val md_theme_dark_scrim = Color(0xFF000000)
 
+val underweight = Color(0xFFBED7EF)
+val normal = Color(0xFFD7FFCD)
+val overweight = Color(0xFFFBF59F)
+val obese = Color(0xFFFECCAC)
+val extremely_obese = Color(0xFFFE9595)
 
 val seed = Color(0xFF3FBF6C)
 

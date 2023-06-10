@@ -1,18 +1,16 @@
-package com.bangkit.vegalicious.ui.screen.searchresults
+package com.bangkit.vegalicious.ui.screen.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bangkit.vegalicious.data.CategoryRepository
 import com.bangkit.vegalicious.data.RecipeRepository
 import com.bangkit.vegalicious.models.Recipe
 import com.bangkit.vegalicious.ui.common.UiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class SearchResultsViewModel(
+class FavoritesViewModel(
 	private val recipeRepository: RecipeRepository,
 ) : ViewModel() {
 	
@@ -33,9 +31,9 @@ class SearchResultsViewModel(
 		}
 	}
 	
-	fun searchRecipes(query: String, tags: List<String>) {
+	fun getFavorites() {
 		viewModelScope.launch {
-			recipeRepository.searchRecipes(query, tags)
+			recipeRepository.getFavorites()
 				.catch {
 					_uiStateRecipe.value = UiState.Error(it.message.toString())
 				}

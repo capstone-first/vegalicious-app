@@ -27,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,10 +37,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.vegalicious.components.OutlinedSearchBar
 import com.bangkit.vegalicious.components.RecipeItem
 import com.bangkit.vegalicious.models.FakeRecipes.dummyRecipes
+import com.bangkit.vegalicious.models.Recipe
+import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
+import com.bangkit.vegalicious.utils.Injection
+import com.bangkit.vegalicious.utils.ViewModelFactory
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,7 +53,13 @@ import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 fun SearchResultsScreen(
 	query: String = "",
 	_tags: List<String> = listOf(),
-	onSearch: (String, List<String>) -> Unit
+	onSearch: (String, List<String>) -> Unit,
+	viewModel: SearchResultsViewModel = viewModel(
+		factory = ViewModelFactory(
+			Injection.provideRecipeRepository(),
+		)
+	),
+	navigateToDetail: (String) -> Unit,
 ) {
 	Log.e("SearchResultsScreen", "After search: $query")
 	var input by remember { mutableStateOf(query) }
@@ -63,8 +75,8 @@ fun SearchResultsScreen(
 				onSearch(input, tags)
 			}
 		) }
-	) {
-		val data = dummyRecipes
+	) { paddingValues ->
+		val uiStateRecipe by remember { viewModel.uiStateRecipe }.collectAsState(initial = UiState.Loading)
 		
 		LazyVerticalGrid(
 			columns = GridCells.Fixed(2),
@@ -72,7 +84,7 @@ fun SearchResultsScreen(
 			horizontalArrangement = Arrangement.spacedBy(16.dp),
 			contentPadding = PaddingValues(horizontal = 16.dp),
 			modifier = Modifier
-				.padding(it)
+				.padding(paddingValues)
 		) {
 			item(span = { GridItemSpan(maxCurrentLineSpan) }) {
 				Text(
@@ -86,17 +98,32 @@ fun SearchResultsScreen(
 				Bundle()
 			}
 			
-			items(data) {
-				RecipeItem(
-					modifier = Modifier
-						.width(200.dp),
-					title = it.title,
-					photoUrl = it.photoUrl,
-					tags = it.tags,
-					description = it.description,
-					enableTags = true
-				)
+			
+			when(uiStateRecipe) {
+				is UiState.Loading -> {
+					viewModel.searchRecipes(input, tags)
+				}
+				is UiState.Success -> {
+					items((uiStateRecipe as UiState.Success<List<Recipe>>).data) {
+						RecipeItem(
+							modifier = Modifier
+								.width(200.dp),
+							title = it.title,
+							photoUrl = it.photoUrl,
+							tags = it.tags,
+							description = it.description,
+							enableTags = true,
+							onClick = { navigateToDetail(it.id) }
+						)
+					}
+				}
+				is UiState.Error -> {
+				
+				}
 			}
+			
+			
+			
 		}
 	}
 }
@@ -162,7 +189,7 @@ fun SearchResultsScreenPreview() {
 			modifier = Modifier.fillMaxSize(),
 			color = MaterialTheme.colorScheme.background
 		) {
-			SearchResultsScreen("Resep", listOf(), {_, _ ->})
+			SearchResultsScreen("Resep", listOf(), {_, _ ->}, navigateToDetail = {})
 		}
 	}
 }
