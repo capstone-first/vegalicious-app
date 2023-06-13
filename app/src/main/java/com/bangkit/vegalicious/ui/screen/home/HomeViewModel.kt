@@ -1,5 +1,6 @@
 package com.bangkit.vegalicious.ui.screen.home
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bangkit.vegalicious.data.CategoryRepository

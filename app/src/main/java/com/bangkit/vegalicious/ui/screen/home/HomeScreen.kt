@@ -52,7 +52,7 @@ fun HomeScreen(
 	navigateToSearch: (String, List<String>) -> Unit,
 	navigateToCategory: (String) -> Unit
 ) {
-
+	
 	Column(
 		modifier = Modifier
 			.verticalScroll(rememberScrollState())

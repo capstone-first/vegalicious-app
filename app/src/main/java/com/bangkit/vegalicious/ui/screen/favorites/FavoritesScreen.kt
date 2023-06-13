@@ -66,7 +66,8 @@ fun FavoritesScreen(
 						tags = it.tags,
 						description = it.description,
 						enableTags = true,
-						onClick = { navigateToDetail(it.id) }
+						onClick = { navigateToDetail(it.id) },
+						enableFavorite = true
 					)
 				}
 			}

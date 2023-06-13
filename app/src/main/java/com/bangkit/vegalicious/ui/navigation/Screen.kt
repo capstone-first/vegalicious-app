@@ -10,7 +10,6 @@ sealed class Screen(val route: String) {
 	object Home : Screen("home")
 	object Search : Screen("search?q={q}&tag1={tag1}&tag2={tag2}&tag3={tag3}") {
 		fun createSearchRoute(query: String, tags: List<String> = listOf()): String {
-			Log.d("TEST", "TEST START")
 			val route = "search?q=$query"
 			
 			val sb = StringBuilder().append(route)
@@ -20,7 +19,8 @@ sealed class Screen(val route: String) {
 				sb.append("&tag$i=$tag")
 				i++
 			}
-			Log.e("CreateSearchRoute", sb.toString())
+			
+			Log.d("CreateSearchRoute", sb.toString())
 			return sb.toString()
 		}
 	}
@@ -33,5 +33,11 @@ sealed class Screen(val route: String) {
 	}
 	object Category : Screen("category/{tag}") {
 		fun createRoute(tag: String) = "category/$tag"
+	}
+	
+	companion object {
+		val menu = listOf(
+			Home.route, Search.route, Favorites.route, Profile.route
+		)
 	}
 }

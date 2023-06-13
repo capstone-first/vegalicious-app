@@ -197,7 +197,7 @@ fun ProfileScreen(
 		)
 		
 		Button(
-			onClick = { /*TODO*/ },
+			onClick = { onClickLogout() },
 			modifier = Modifier.width(156.dp),
 			colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
 		) {

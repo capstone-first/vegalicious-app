@@ -16,6 +16,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +25,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.bangkit.vegalicious.ui.navigation.NavigationItem
@@ -45,8 +47,13 @@ fun VegaliciousApp(
 	modifier: Modifier = Modifier,
 	navController: NavHostController = rememberNavController(),
 ) {
+	val currentBackStack by navController.currentBackStackEntryAsState()
+	val currentDestination = currentBackStack?.destination
 	Scaffold(
-		bottomBar = { BottomBar(navController = navController) },
+		bottomBar = { if(currentDestination?.route in Screen.menu) {
+				BottomBar(navController = navController)
+			}
+		},
 	) { it ->
 		NavHost(
 			navController = navController,
@@ -56,17 +63,23 @@ fun VegaliciousApp(
 			composable(Screen.Splash.route) {
 				SplashScreen(
 					navigateToHome = {
-						navController.navigate(Screen.Home.route)
+						navController.navigate(Screen.Home.route) {
+							popUpTo(Screen.Splash.route) { inclusive = true }
+						}
 					},
 					 navigateToLogin =  {
-						navController.navigate(Screen.Login.route)
+						navController.navigate(Screen.Login.route) {
+							popUpTo(Screen.Splash.route) { inclusive = true }
+						}
 					}
 				)
 			}
 			composable(Screen.Login.route) {
 				LoginScreen(
 					navigateToHome = {
-						navController.navigate(Screen.Home.route)
+						navController.navigate(Screen.Home.route) {
+							popUpTo(Screen.Login.route) { inclusive = true }
+						}
 					},
 					navigateToSignup = {
 						navController.navigate(Screen.Signup.route)
@@ -76,7 +89,9 @@ fun VegaliciousApp(
 			composable(Screen.Signup.route) {
 				SignupScreen(
 					navigateToLogin = {
-						navController.navigate(Screen.Login.route)
+						navController.navigate(Screen.Login.route) {
+							popUpTo(Screen.Login.route) { inclusive = true }
+						}
 					},
 				)
 			}
@@ -153,7 +168,11 @@ fun VegaliciousApp(
 				val username = it.arguments?.getString("username").toString()
 				ProfileScreen(
 					username = username,
-					onClickLogout = {}
+					onClickLogout = {
+						navController.navigate(Screen.Login.route) {
+							popUpTo(Screen.Splash.route) { inclusive = true }
+						}
+					}
 				)
 			}
 			composable(
@@ -213,6 +232,11 @@ fun BottomBar(
 				icon = Icons.Outlined.BookmarkBorder,
 				screen = Screen.Favorites
 			),
+//			NavigationItem(
+//				title = stringResource(R.string.menu_profile),
+//				icon = Icons.Outlined.AccountCircle,
+//				screen = Screen.Profile
+//			),
 		)
 		
 		navigationItems.map { item ->
@@ -241,7 +265,7 @@ fun BottomBar(
 		NavigationBarItem(
 			selected = false,
 			onClick = {
-				navController.navigate(Screen.Profile.createRoute("")) {
+				navController.navigate(Screen.Profile.createRoute("johndoe123")) {
 					popUpTo(navController.graph.findStartDestination().id) {
 						saveState = true
 					}

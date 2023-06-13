@@ -1,5 +1,6 @@
 package com.bangkit.vegalicious.ui.screen.auth.login
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material3.Button
@@ -20,19 +22,25 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.components.AnnotatedClickableText
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
+import com.bangkit.vegalicious.utils.StoreUserData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,6 +51,12 @@ fun LoginScreen(
 ) {
 	var emailInput by remember { mutableStateOf("") }
 	var passwordInput by remember { mutableStateOf("")}
+	
+	val context = LocalContext.current
+	val scope = rememberCoroutineScope()
+	val dataStore = StoreUserData(context)
+	
+	val auth = dataStore.getAuthKey.collectAsState(initial = "").also { Log.d("LoginAuth", "${it.value}") }
 	
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
@@ -105,13 +119,15 @@ fun LoginScreen(
 			modifier = Modifier
 				.fillMaxWidth(),
 			label = { Text("Password")},
-			placeholder = { Text("yourpass123")}
+			placeholder = { Text("yourpass123")},
+			visualTransformation =  PasswordVisualTransformation(),
+			keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
 		)
-		Button(onClick = { /*TODO*/ }, Modifier.width(156.dp)) {
+		Button(onClick = { navigateToHome() }, Modifier.width(156.dp)) {
 			Text("Sign In")
 		}
 		Divider()
-		AnnotatedClickableText(text1 = "Don't have an account? ", text2 = "Click here to Sign Up!", action = { /*TODO*/ })
+		AnnotatedClickableText(text1 = "Don't have an account? ", text2 = "Click here to Sign Up!", action = { navigateToSignup() })
 	}
 }
 

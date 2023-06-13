@@ -47,6 +47,7 @@ fun AnnotatedClickableText(text1: String, text2: String, action: () -> Unit, mod
 				end = offset
 			).firstOrNull()?.let { annotation ->
 				Log.d("Clicked URL", annotation.item)
+				action()
 			}
 		}
 	)

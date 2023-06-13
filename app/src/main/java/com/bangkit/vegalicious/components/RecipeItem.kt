@@ -51,6 +51,7 @@ fun RecipeItem(
 	description: String,
 	modifier: Modifier = Modifier,
 	enableTags: Boolean,
+	enableFavorite: Boolean = false,
 	onClick: () -> Unit = {},
 ) {
 	ElevatedCard(
@@ -70,21 +71,22 @@ fun RecipeItem(
 				modifier = Modifier
 					.height(120.dp)
 			)
-			
-			IconButton(
-				onClick = { /*TODO*/ },
-				colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.surface),
-				modifier = Modifier
-					.padding(4.dp)
-					.clip(CircleShape)
-					.size(24.dp)
-			) {
-				Icon(
-					painterResource(id = R.drawable.bookmark_border),
-					contentDescription = null,
+			if(enableFavorite) {
+				IconButton(
+					onClick = { /*TODO*/ },
+					colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.surface),
 					modifier = Modifier
-						.size(16.dp)
-				)
+						.padding(4.dp)
+						.clip(CircleShape)
+						.size(24.dp)
+				) {
+					Icon(
+						painterResource(id = R.drawable.bookmark_border),
+						contentDescription = null,
+						modifier = Modifier
+							.size(16.dp)
+					)
+				}
 			}
 			
 		}
