@@ -22,6 +22,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,17 +38,24 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.components.AnnotatedClickableText
+import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 import com.bangkit.vegalicious.utils.StoreUserData
+import com.bangkit.vegalicious.utils.ViewModelFactory
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
 	modifier: Modifier = Modifier,
 	navigateToSignup: () -> Unit,
-	navigateToHome: () -> Unit
+	navigateToHome: () -> Unit,
+	loginViewModel: LoginViewModel = viewModel(
+		factory = ViewModelFactory()
+	)
 ) {
 	var emailInput by remember { mutableStateOf("") }
 	var passwordInput by remember { mutableStateOf("")}
@@ -56,7 +64,30 @@ fun LoginScreen(
 	val scope = rememberCoroutineScope()
 	val dataStore = StoreUserData(context)
 	
-	val auth = dataStore.getAuthKey.collectAsState(initial = "").also { Log.d("LoginAuth", "${it.value}") }
+//	val auth = dataStore.getAuthKey.collectAsState(initial = "").also { Log.d("LoginAuth", "${it.value}") }
+	
+	loginViewModel.uiStateLogin.collectAsState(initial = UiState.Loading).value.let {uiState ->
+		when(uiState) {
+			is UiState.Loading -> {
+				// tampilkan loading
+			}
+			is UiState.Success -> {
+				if(loginViewModel.isDone) {
+					Log.d("LoginScreen", "Running UiState.Success")
+					LaunchedEffect(Unit) {
+						scope.launch {
+							dataStore.saveAuthKey(uiState.data.accessToken)
+						}
+					}
+					navigateToHome()
+					loginViewModel.isDone = false
+				}
+			}
+			is UiState.Error -> {
+				// tampilkan pesan error
+			}
+		}
+	}
 	
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
@@ -123,13 +154,14 @@ fun LoginScreen(
 			visualTransformation =  PasswordVisualTransformation(),
 			keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
 		)
-		Button(onClick = { navigateToHome() }, Modifier.width(156.dp)) {
+		Button(onClick = { loginViewModel.loginUser(emailInput, passwordInput).also { Log.d("LoginScreen", "calling loginViewModel.loginUser()") } }, Modifier.width(156.dp)) {
 			Text("Sign In")
 		}
 		Divider()
 		AnnotatedClickableText(text1 = "Don't have an account? ", text2 = "Click here to Sign Up!", action = { navigateToSignup() })
 	}
 }
+
 
 @Preview(showBackground = true)
 @Composable

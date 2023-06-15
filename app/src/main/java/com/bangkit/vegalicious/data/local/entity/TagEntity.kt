@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class TagEntity(
 	@PrimaryKey
 	@ColumnInfo(name = "tagId")
-	val tagId: Int,
+	val tagId: String,
 	@ColumnInfo(name = "tagText")
 	val tagText: String,
 	@ColumnInfo(name = "recipeId")

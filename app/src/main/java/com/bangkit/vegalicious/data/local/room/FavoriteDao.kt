@@ -18,10 +18,10 @@ import kotlinx.coroutines.flow.Flow
 interface FavoriteDao {
 	
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
-	fun insertFavorite(favorite: FavoriteRecipeEntity)
+	suspend fun insertFavorite(favorite: FavoriteRecipeEntity)
 	
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
-	fun insertTag(tagEntity: List<TagEntity>)
+	suspend fun insertTag(tagEntity: List<TagEntity>)
 	
 	@Insert(onConflict = OnConflictStrategy.IGNORE)
 	fun insertIngredient(ingredientEntity: List<IngredientEntity>)
@@ -38,6 +38,10 @@ interface FavoriteDao {
 	@Transaction
 	@Query("SELECT * FROM favorites")
 	fun getAllFavoriteAndTag(): Flow<List<RecipeAndTag>>
+	
+//	@Transaction
+//	@Query("SELECT * FROM tags WHERE recipeId = :rId ")
+//	fun getAllTagsFromFavorites(rId: String): Flow<List<TagEntity>>
 	
 //	@Query("SELECT * FROM favorite_recipe_database ORDER BY title ASC")
 //	fun getAllFavorites(): LiveData<List<FavoriteRecipyEntity>>

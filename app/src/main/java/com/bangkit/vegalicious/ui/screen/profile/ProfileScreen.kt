@@ -1,6 +1,6 @@
 package com.bangkit.vegalicious.ui.screen.profile
 
-import android.widget.ImageView
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -27,32 +27,93 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.bangkit.vegalicious.data.remote.response.UserData
+import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 import com.bangkit.vegalicious.ui.theme.overweight
-import com.bangkit.vegalicious.ui.theme.underweight
 import com.bangkit.vegalicious.utils.Injection
+import com.bangkit.vegalicious.utils.StoreUserData
 import com.bangkit.vegalicious.utils.ViewModelFactory
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
-	viewModel: ProfileViewModel = viewModel(
+	profileViewModel: ProfileViewModel = viewModel(
 		factory = ViewModelFactory(
-			Injection.provideProfileRepository()
+			profileRepository = Injection.provideProfileRepository()
 		)
 	),
 	onClickLogout: () -> Unit = {},
 	username: String,
+) {
+	
+	val context = LocalContext.current
+	val scope = rememberCoroutineScope()
+	val dataStore = StoreUserData(context)
+	
+	var bmiState by remember { mutableStateOf(0f to "Unknown")}
+	bmiState = profileViewModel.bmiState
+	
+	if(!profileViewModel.isAuthed.also{ Log.d("ProfileScreen", "isLogin = false")}) {
+		if(profileViewModel.isStartedLogout) {
+			LaunchedEffect(Unit) {
+				scope.launch {
+					dataStore.saveAuthKey("")
+				}
+			}
+			onClickLogout()
+			profileViewModel.stop()
+		}
+	}
+	
+	profileViewModel.uiState.collectAsState(initial = UiState.Loading).value.let { uiState ->
+		when(uiState) {
+			is UiState.Loading -> {
+				Log.d(ProfileScreenObject.PROFILE_SCREEN, "Loading")
+				profileViewModel.getProfile()
+				// TODO: Buat Loading
+			}
+			is UiState.Success -> {
+//				if(profileViewModel.isStartedGetProfile) {
+					ProfileElement(userData = uiState.data.data, bmi = bmiState) {
+						profileViewModel.logout()
+					}
+					profileViewModel.stopGetProfile()
+//				} else {
+//
+//				}
+			}
+			is UiState.Error -> {
+				Log.d(ProfileScreenObject.PROFILE_SCREEN, uiState.errorMessage)
+				// TODO: Buat pesan error
+			}
+		}
+	}
+}
+
+@Composable
+fun ProfileElement(
+	userData: UserData,
+	bmi: Pair<Float, String>,
+	onClickLogout: () -> Unit
 ) {
 	Column(
 		modifier = Modifier
@@ -82,7 +143,7 @@ fun ProfileScreen(
 						)
 			)
 			AsyncImage(
-				model = "https://raw.githubusercontent.com/capstone-first/Vegalicious-Avatar/main/personas-1686142004455.png",
+				model = userData.photoUrl,
 				contentDescription = null,
 				contentScale = ContentScale.Crop,
 				modifier = Modifier
@@ -95,7 +156,7 @@ fun ProfileScreen(
 			.padding(horizontal = 32.dp)
 			.fillMaxWidth()
 		Text(
-			text = "John Doe",
+			text = userData.name,
 			style = MaterialTheme.typography.headlineSmall,
 			textAlign = TextAlign.Center,
 			modifier = mod
@@ -126,7 +187,7 @@ fun ProfileScreen(
 						verticalAlignment = Alignment.CenterVertically,
 					) {
 						Text(
-							text = "168cm",
+							text = userData.height + "cm",
 							textAlign = TextAlign.Center,
 							modifier = Modifier
 								.fillMaxWidth(),
@@ -151,17 +212,19 @@ fun ProfileScreen(
 						verticalAlignment = Alignment.CenterVertically,
 					) {
 						Text(
-							text = "72kg",
+							text = userData.weight + "kg",
 							textAlign = TextAlign.Center,
 							modifier = Modifier
 								.fillMaxWidth(),
 							style = MaterialTheme.typography.bodyMedium
 						)
 					}
-				
+					
 				}
 				Column(
-					Modifier.weight(1f).background(color = overweight),
+					Modifier
+						.weight(1f)
+						.background(color = overweight),
 				) {
 					Text(
 						text = "BMI",
@@ -171,7 +234,7 @@ fun ProfileScreen(
 							.copy(fontWeight = FontWeight.Bold)
 					)
 					Text(
-						text = "25.5",
+						text = bmi.first.toString(),
 						textAlign = TextAlign.Center,
 						modifier = Modifier
 							.padding(vertical = 4.dp)
@@ -179,18 +242,16 @@ fun ProfileScreen(
 						style = MaterialTheme.typography.bodyMedium
 					)
 					Text(
-						text = "Overweight",
+						text = bmi.second,
 						textAlign = TextAlign.Center,
 						modifier = Modifier.fillMaxWidth(),
 						style = MaterialTheme.typography.labelSmall
 					)
-				
+					
 				}
 			}
 		}
-		InformationElement(title = "Username", value = "johndoe123", modifier = mod)
-		InformationElement(title = "Email", value = "johndoe@email.com", modifier = mod)
-		InformationElement(title = "Date of Birth", value = "January 16, 2002", modifier = mod)
+		InformationElement(title = "Email", value = userData.email, modifier = mod)
 		
 		Divider(
 			modifier = mod.padding(vertical = 16.dp)
@@ -230,4 +291,8 @@ fun ProfileScreenPreview() {
 			ProfileScreen(username = "johndoe123")
 		}
 	}
+}
+
+object ProfileScreenObject {
+	const val PROFILE_SCREEN = "ProfileScreen"
 }

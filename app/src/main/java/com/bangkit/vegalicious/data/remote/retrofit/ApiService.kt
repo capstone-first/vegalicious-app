@@ -1,9 +1,10 @@
 package com.bangkit.vegalicious.data.remote.retrofit
 
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
+import com.bangkit.vegalicious.data.remote.response.LoginResponse
+import com.bangkit.vegalicious.data.remote.response.ProfileResponse
+import com.bangkit.vegalicious.data.remote.response.RegisterResponse
+import retrofit2.http.*
+import retrofit2.Call
 
 interface ApiService {
 	
@@ -12,7 +13,7 @@ interface ApiService {
 	fun loginUser(
 		@Field("email") email: String,
 		@Field("password") password: String,
-	)
+	): Call<LoginResponse>
 	
 	@FormUrlEncoded
 	@POST("/api/register")
@@ -20,10 +21,10 @@ interface ApiService {
 		@Field("email") email: String,
 		@Field("password") password: String,
 		@Field("name") name: String,
-	)
+	): Call<RegisterResponse>
 	
 	@GET("/api/profile")
-	fun getProfile()
+	fun getProfile(): Call<ProfileResponse>
 	
 	@GET("/api/category")
 	fun getAllCategory()

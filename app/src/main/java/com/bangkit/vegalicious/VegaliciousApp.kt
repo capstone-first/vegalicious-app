@@ -90,7 +90,7 @@ fun VegaliciousApp(
 				SignupScreen(
 					navigateToLogin = {
 						navController.navigate(Screen.Login.route) {
-							popUpTo(Screen.Login.route) { inclusive = true }
+							popUpTo(Screen.Signup.route) { inclusive = true }
 						}
 					},
 				)
@@ -161,16 +161,12 @@ fun VegaliciousApp(
 			}
 			composable(
 				route = Screen.Profile.route,
-				arguments = listOf(navArgument("username") {
-					type = NavType.StringType
-				}),
 			) {
-				val username = it.arguments?.getString("username").toString()
 				ProfileScreen(
-					username = username,
+					username = "username",
 					onClickLogout = {
 						navController.navigate(Screen.Login.route) {
-							popUpTo(Screen.Splash.route) { inclusive = true }
+							popUpTo(Screen.Home.route) { inclusive = true }
 						}
 					}
 				)

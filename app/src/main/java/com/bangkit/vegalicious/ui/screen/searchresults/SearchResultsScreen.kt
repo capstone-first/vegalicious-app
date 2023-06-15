@@ -2,13 +2,10 @@ package com.bangkit.vegalicious.ui.screen.searchresults
 
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -40,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.vegalicious.components.OutlinedSearchBar
 import com.bangkit.vegalicious.components.RecipeItem
-import com.bangkit.vegalicious.models.FakeRecipes.dummyRecipes
 import com.bangkit.vegalicious.models.Recipe
 import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
@@ -109,7 +105,7 @@ fun SearchResultsScreen(
 							modifier = Modifier
 								.width(200.dp),
 							title = it.title,
-							photoUrl = it.photoUrl,
+							photoUrl = it.image,
 							tags = it.tags,
 							description = it.description,
 							enableTags = true,

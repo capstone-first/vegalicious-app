@@ -1,5 +1,6 @@
 package com.bangkit.vegalicious.ui.screen.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,8 +20,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +41,7 @@ import com.bangkit.vegalicious.models.dummyCategories
 import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 import com.bangkit.vegalicious.utils.Injection
+import com.bangkit.vegalicious.utils.StoreUserData
 import com.bangkit.vegalicious.utils.ViewModelFactory
 
 @Composable
@@ -177,7 +181,7 @@ fun RecommendedRow(
 				modifier = Modifier
 					.width(180.dp),
 				title = it.title,
-				photoUrl = it.photoUrl,
+				photoUrl = it.image,
 				tags = it.tags,
 				description = it.description,
 				enableTags = false,

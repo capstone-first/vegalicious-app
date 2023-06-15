@@ -21,4 +21,8 @@ class RecipeDetailsViewModel(private val recipeRepository: RecipeRepository) : V
 			_uiState.value = UiState.Success(recipeRepository.getRecipeById(recipeId)) // Hasil bisa saja null kalau ada error. Jangan lupa cari logikanya.
 		}
 	}
+	
+	fun saveRecipe() {
+	
+	}
 }

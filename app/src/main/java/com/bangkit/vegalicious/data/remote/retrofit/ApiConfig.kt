@@ -9,9 +9,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ApiConfig {
 	
 	companion object {
-		private var auth: String? = null
+		private var auth: String? = null // null
 		
-		fun getApiService(): ApiService {
+		fun getApiService(isModel: Boolean = false): ApiService {
+			var url = "https://vegalicious-dot-vegalicious-2.et.r.appspot.com/"
+//			if(isModel) url = "https://recommendation-system-endpoint-yulxuobada-et.a.run.app/"
 			
 			val loggingInterceptor =
 				HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -30,7 +32,7 @@ class ApiConfig {
 				.build()
 			
 			val retrofit = Retrofit.Builder()
-				.baseUrl("https://vegalicious-2.et.r.appspot.com/")
+				.baseUrl(url)
 				.addConverterFactory(GsonConverterFactory.create())
 				.client(client)
 				.build()

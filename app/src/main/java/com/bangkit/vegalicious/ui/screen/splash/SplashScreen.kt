@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bangkit.vegalicious.R
+import com.bangkit.vegalicious.data.remote.retrofit.ApiConfig
 import com.bangkit.vegalicious.ui.navigation.Screen
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 import com.bangkit.vegalicious.utils.StoreUserData
@@ -37,9 +38,11 @@ fun SplashScreen(navigateToHome: () -> Unit, navigateToLogin: () -> Unit) {
 	
 	LaunchedEffect(Unit) {
 		scope.launch {
-//			dataStore.saveAuthKey("authkey")
+//			dataStore.saveAuthKey("")
 			dataStore.getAuthKey.collectLatest {
-				if(it != "") {
+				if(!it.isNullOrEmpty()) {
+					ApiConfig.setAuth(it)
+					Log.d("SplashScreen", it)
 					navigateToHome()
 				} else {
 					navigateToLogin()

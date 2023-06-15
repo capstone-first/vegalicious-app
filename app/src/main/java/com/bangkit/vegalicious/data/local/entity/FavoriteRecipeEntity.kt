@@ -14,7 +14,7 @@ data class FavoriteRecipeEntity(
 	val id: String,
 	
 	@ColumnInfo(name = "title")
-	val title: String? = null,
+	val title: String,
 	
 //	@ColumnInfo(name = "category")
 //	val category: List<String> = listOf(),
