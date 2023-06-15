@@ -63,8 +63,7 @@ fun CategoryScreen(
 					.width(200.dp),
 				title = it.title,
 				photoUrl = it.image,
-				tags = it.tags,
-				description = it.description,
+				tags = listOf(),
 				enableTags = true,
 				onClick = { navigateToDetail(it.id) }
 			)

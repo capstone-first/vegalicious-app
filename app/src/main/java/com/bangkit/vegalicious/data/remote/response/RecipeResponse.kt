@@ -4,39 +4,54 @@ import com.google.gson.annotations.SerializedName
 
 data class RecipeResponse(
 
+	@field:SerializedName("totalData")
+	val totalData: Int,
+
 	@field:SerializedName("data")
-	val data: List<RecipeItem?>? = null,
+	val data: List<RecipeData>,
+
+	@field:SerializedName("totalPages")
+	val totalPages: Int,
+
+	@field:SerializedName("currentPage")
+	val currentPage: Int,
 
 	@field:SerializedName("status")
-	val status: String? = null
+	val status: String
 )
 
-data class RecipeItem(
+data class RecipeData(
+
+	@field:SerializedName("sodium")
+	val sodium: Int,
 
 	@field:SerializedName("image")
-	val image: String? = null,
+	val image: String,
 
 	@field:SerializedName("createdAt")
-	val createdAt: String? = null,
+	val createdAt: String,
 
-	@field:SerializedName("directions")
-	val directions: List<String?>? = null,
+	@field:SerializedName("fat")
+	val fat: Int,
 
-	@field:SerializedName("ingredients")
-	val ingredients: List<String?>? = null,
+	@field:SerializedName("rating")
+	val rating: Int,
 
 	@field:SerializedName("description")
-	val description: String? = null,
+	val description: String?,
 
 	@field:SerializedName("id")
-	val id: String? = null,
+	val id: String,
+
+	@field:SerializedName("calories")
+	val calories: Int,
 
 	@field:SerializedName("title")
-	val title: String? = null,
-
-	@field:SerializedName("category")
-	val category: List<String?>? = null,
+	val title: String,
 
 	@field:SerializedName("updatedAt")
-	val updatedAt: String? = null
+	val updatedAt: String,
+	
+	@field:SerializedName("RecipeCategory")
+	val recipeCategory: List<RecipeCategoryItem>,
 )

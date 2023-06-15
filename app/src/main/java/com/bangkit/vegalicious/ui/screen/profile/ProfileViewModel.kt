@@ -61,8 +61,8 @@ class ProfileViewModel(
 					Log.d(TAG, ON_RESPONSE + responseBody.status)
 					_uiState.value = UiState.Error(responseBody.status)
 				} else {
-					Log.d(TAG, ON_RESPONSE + LoginViewModel.RESPONSE_NULL)
-					_uiState.value = UiState.Error(LoginViewModel.RESPONSE_NULL)
+					Log.d(TAG, ON_RESPONSE + RESPONSE_NULL)
+					_uiState.value = UiState.Error(RESPONSE_NULL)
 				}
 			}
 			

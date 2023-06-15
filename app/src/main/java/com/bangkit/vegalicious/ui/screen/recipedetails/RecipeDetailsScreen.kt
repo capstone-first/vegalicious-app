@@ -1,5 +1,6 @@
 package com.bangkit.vegalicious.ui.screen.recipedetails
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.components.SectionText
+import com.bangkit.vegalicious.data.remote.response.Category
+import com.bangkit.vegalicious.data.remote.response.Direction
+import com.bangkit.vegalicious.data.remote.response.Ingredient
+import com.bangkit.vegalicious.data.remote.response.RecipeCategoryItem
+import com.bangkit.vegalicious.data.remote.response.RecipeDirectionItem
+import com.bangkit.vegalicious.data.remote.response.RecipeIngredientItem
 import com.bangkit.vegalicious.models.Recipe
 import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
@@ -58,13 +65,13 @@ fun RecipeDetailsScreen(
 	recipeId: String,
 	navigateBack: () -> Unit,
 ) {
-	viewModel.uiState.collectAsState(initial = UiState.Loading).value.let {
+	viewModel.uiStateRecipeDetails.collectAsState(initial = UiState.Loading).value.let {
 		when(it) {
 			is UiState.Loading -> {
 				viewModel.getRecipeById(recipeId)
 			}
 			is UiState.Success -> {
-				val data = it.data
+				val data = it.data.data
 				Box(
 					contentAlignment = Alignment.TopCenter,
 					modifier = Modifier
@@ -78,10 +85,14 @@ fun RecipeDetailsScreen(
 							.offset(y = 170.dp),
 						verticalArrangement = Arrangement.spacedBy(16.dp),
 					) {
-						TitleRow(data)
-						NutritionFactsRow(data = data.nutrition)
-						IngredientsRow(data.ingredients)
-						DirectionsRow(data.directions)
+						TitleRow(data.title, data.recipeCategory)
+						NutritionFactsRow(
+							fat = data.fat.toFloat(),
+							calories = data.calories.toFloat(),
+							sodium = data.sodium.toFloat()
+						)
+						IngredientsRow(data.recipeIngredient)
+						DirectionsRow(data.recipeDirection)
 					}
 				}
 			}
@@ -124,7 +135,8 @@ fun Header(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun TitleRow (
-	data: Recipe
+	title: String,
+	tags: List<RecipeCategoryItem> = listOf()
 ){
 	ElevatedCard(
 		modifier = Modifier
@@ -144,7 +156,7 @@ fun TitleRow (
 						.padding(bottom = 8.dp)
 						.fillMaxWidth()
 						.weight(1f),
-					text = data.title,
+					text = title,
 					style = MaterialTheme.typography.headlineMedium.copy(
 						fontWeight = FontWeight.Bold
 					)
@@ -170,36 +182,33 @@ fun TitleRow (
 					.fillMaxWidth(),
 				horizontalArrangement = Arrangement.spacedBy(4.dp),
 			) {
-				for(tag in data.tags) {
+				for(tag in tags) {
 					Card(
 						modifier = Modifier
-							.padding(bottom = 4.dp),
+							.padding(bottom = 4.dp)
+							.clickable {
+							
+							}
+						,
 						colors = CardDefaults.cardColors(
 							containerColor = MaterialTheme.colorScheme.surfaceVariant
 						),
 					) {
 						Text(
 							modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-							text = tag,
+							text = tag.category.name,
 							style = MaterialTheme.typography.labelSmall
 						)
 						
 					}
 				}
 			}
-			Text(
-				modifier = Modifier
-					.padding(top = 8.dp)
-					.fillMaxWidth(),
-				text = data.description,
-				style = MaterialTheme.typography.bodyMedium
-			)
 		}
 	}
 }
 
 @Composable
-fun NutritionFactsRow(data: Map<String, Float>) {
+fun NutritionFactsRow(calories: Float, fat: Float, sodium: Float) {
 	Column(
 		Modifier.padding(horizontal = 24.dp)
 	) {
@@ -210,11 +219,11 @@ fun NutritionFactsRow(data: Map<String, Float>) {
 				.padding(bottom = 4.dp)
 		) {
 			Text(
-				"Total Calories ${data["calories"]}mg",
+				"Total Calories ${calories}mg",
 				style = MaterialTheme.typography.labelLarge
 			)
 			Text(
-				"Total Fat ${data["fat"]}mg",
+				"Total Fat ${fat}mg",
 				style = MaterialTheme.typography.labelLarge
 			)
 		}
@@ -223,11 +232,7 @@ fun NutritionFactsRow(data: Map<String, Float>) {
 			modifier = Modifier.fillMaxWidth()
 		) {
 			Text(
-				"Total Protein ${data["protein"]}mg",
-				style = MaterialTheme.typography.labelLarge
-			)
-			Text(
-				"Total Sodium ${data["sodium"]}mg",
+				"Total Sodium ${sodium}mg",
 				style = MaterialTheme.typography.labelLarge
 			)
 		}
@@ -235,7 +240,7 @@ fun NutritionFactsRow(data: Map<String, Float>) {
 }
 
 @Composable
-fun IngredientsRow(ingredients: List<String>) {
+fun IngredientsRow(ingredients: List<RecipeIngredientItem>) {
 	ElevatedCard(
 		modifier = Modifier
 			.fillMaxWidth(),
@@ -251,7 +256,7 @@ fun IngredientsRow(ingredients: List<String>) {
 			SectionText(title = "Ingredients", modifier = Modifier)
 			for(item in ingredients) {
 				Text(
-					text = item,
+					text = item.ingredient.name,
 					modifier = Modifier
 						.padding(top = 8.dp)
 						.fillMaxWidth(),
@@ -263,7 +268,7 @@ fun IngredientsRow(ingredients: List<String>) {
 }
 
 @Composable
-fun DirectionsRow(directions: List<String>) {
+fun DirectionsRow(directions: List<RecipeDirectionItem>) {
 	ElevatedCard(
 		modifier = Modifier
 			.fillMaxWidth(),
@@ -279,7 +284,7 @@ fun DirectionsRow(directions: List<String>) {
 			SectionText(title = "Directions", modifier = Modifier)
 			for(item in directions) {
 				Text(
-					text = item,
+					text = item.direction.name,
 					modifier = Modifier
 						.padding(top = 8.dp)
 						.fillMaxWidth(),

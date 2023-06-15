@@ -21,7 +21,7 @@ class RecipeRepository {
 		return flowOf(recipes)
 	}
 	
-	fun searchRecipes(query: String, tags: List<String>): Flow<List<Recipe>> {
+	fun searchRecipes(query: String): Flow<List<Recipe>> {
 		return flowOf(recipes)
 	}
 	

@@ -90,6 +90,13 @@ fun ProfileScreen(
 				Log.d(ProfileScreenObject.PROFILE_SCREEN, "Loading")
 				profileViewModel.getProfile()
 				// TODO: Buat Loading
+				Button(
+					onClick = { onClickLogout() },
+					modifier = Modifier.width(156.dp),
+					colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+				) {
+					Text("Log Out")
+				}
 			}
 			is UiState.Success -> {
 //				if(profileViewModel.isStartedGetProfile) {
@@ -104,6 +111,13 @@ fun ProfileScreen(
 			is UiState.Error -> {
 				Log.d(ProfileScreenObject.PROFILE_SCREEN, uiState.errorMessage)
 				// TODO: Buat pesan error
+				Button(
+					onClick = { onClickLogout() },
+					modifier = Modifier.width(156.dp),
+					colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+				) {
+					Text("Log Out")
+				}
 			}
 		}
 	}

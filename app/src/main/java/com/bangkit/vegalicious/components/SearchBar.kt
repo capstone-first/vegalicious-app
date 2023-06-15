@@ -34,10 +34,12 @@ import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 @Composable
 fun SearchBar(
 	modifier: Modifier = Modifier,
+	value: String,
+	onValueChange: (String) -> Unit
 ) {
 	TextField(
-		value = "",
-		onValueChange = {},
+		value = value,
+		onValueChange = { onValueChange(it) },
 		leadingIcon = {
 			Icon(
 				imageVector = Icons.Default.Search,
@@ -153,6 +155,6 @@ fun OutlinedSearchBar2(
 @Composable
 fun SearchBarPreview() {
 	VegaliciousTheme() {
-		SearchBar()
+		SearchBar(value = "", onValueChange = {_ -> })
 	}
 }

@@ -40,6 +40,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.bangkit.vegalicious.R
+import com.bangkit.vegalicious.data.remote.response.Category
+import com.bangkit.vegalicious.data.remote.response.RecipeCategoryItem
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,8 +49,7 @@ import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 fun RecipeItem(
 	title: String,
 	photoUrl: String,
-	tags: List<String>,
-	description: String,
+	tags: List<RecipeCategoryItem>,
 	modifier: Modifier = Modifier,
 	enableTags: Boolean,
 	enableFavorite: Boolean = false,
@@ -115,7 +116,7 @@ fun RecipeItem(
 						) {
 							Text(
 								modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-								text = it,
+								text = it.category.name,
 								style = MaterialTheme.typography.labelSmall
 							)
 							
@@ -123,14 +124,14 @@ fun RecipeItem(
 					}
 				}
 			}
-			Text(
-				text = description,
-				style = MaterialTheme.typography.bodySmall,
-				maxLines = 2,
-				overflow = TextOverflow.Ellipsis,
-				modifier = Modifier
-					.padding(top = 4.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)
-			)
+//			Text(
+//				text = description,
+//				style = MaterialTheme.typography.bodySmall,
+//				maxLines = 2,
+//				overflow = TextOverflow.Ellipsis,
+//				modifier = Modifier
+//					.padding(top = 4.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)
+//			)
 		}
 		
 	}
@@ -144,12 +145,12 @@ fun RecipeItemTruePreview() {
 			"Jackfruit Curry",
 			"https://assets.epicurious.com/photos/63b5b03305dd27a0d03a18a6/1:1/w_1920,c_limit/Jackfruit%20curry-RECIPE.jpg",
 			listOf(
-				"Jackfruit",
-				"Curry",
-				"Indian",
-				"Lunch",
+				RecipeCategoryItem(Category("Jackfruit", "1")),
+				RecipeCategoryItem(Category("Curry", "2")),
+				RecipeCategoryItem(Category("Indian", "3")),
+				RecipeCategoryItem(Category("Lunch", "4")),
 			),
-			"This recipe was excerpted from 'Chetna's Healthy Indian: Vegetarian' by Chetna Makan.",
+//			"This recipe was excerpted from 'Chetna's Healthy Indian: Vegetarian' by Chetna Makan.",
 			enableTags = true
 		)
 	}
@@ -163,12 +164,12 @@ fun RecipeItemFalsePreview() {
 			"Jackfruit Curry",
 			"https://assets.epicurious.com/photos/63b5b03305dd27a0d03a18a6/1:1/w_1920,c_limit/Jackfruit%20curry-RECIPE.jpg",
 			listOf(
-				"Jackfruit",
-				"Curry",
-				"Indian",
-				"Lunch",
+				RecipeCategoryItem(Category("Jackfruit", "1")),
+				RecipeCategoryItem(Category("Curry", "2")),
+				RecipeCategoryItem(Category("Indian", "3")),
+				RecipeCategoryItem(Category("Lunch", "4")),
 			),
-			"This recipe was excerpted from 'Chetna's Healthy Indian: Vegetarian' by Chetna Makan.",
+//			"This recipe was excerpted from 'Chetna's Healthy Indian: Vegetarian' by Chetna Makan.",
 			enableTags = false
 		)
 	}

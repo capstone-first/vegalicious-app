@@ -20,7 +20,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -34,6 +38,8 @@ import com.bangkit.vegalicious.components.CategoryItem
 import com.bangkit.vegalicious.components.RecipeItem
 import com.bangkit.vegalicious.components.SearchBar
 import com.bangkit.vegalicious.components.SectionText
+import com.bangkit.vegalicious.data.remote.response.RecipeData
+import com.bangkit.vegalicious.data.remote.response.RecipeResponse
 import com.bangkit.vegalicious.models.Category
 import com.bangkit.vegalicious.models.FakeRecipes
 import com.bangkit.vegalicious.models.Recipe
@@ -53,16 +59,16 @@ fun HomeScreen(
 		)
 	),
 	navigateToDetail: (String) -> Unit,
-	navigateToSearch: (String, List<String>) -> Unit,
 	navigateToCategory: (String) -> Unit
 ) {
+	var searchInput by remember { mutableStateOf("") }
 	
 	Column(
 		modifier = Modifier
 			.verticalScroll(rememberScrollState())
 			.padding(bottom = 16.dp)
 	) {
-		Banner()
+		Banner(value = searchInput, onValueChange = { newValue -> searchInput = newValue})
 		SectionText(title = stringResource(id = R.string.main_category_section))
 		
 		viewModel.uiStateCategory.collectAsState(initial = UiState.Loading).value.let { uiState ->
@@ -86,7 +92,7 @@ fun HomeScreen(
 					viewModel.getAllRecipes()
 				}
 				is UiState.Success -> {
-					RecommendedRow(listRecipes = uiState.data, navigateToDetail = navigateToDetail,)
+					RecommendedRow(listRecipes = uiState.data.data, navigateToDetail = navigateToDetail,)
 				}
 				is UiState.Error -> {
 				
@@ -107,9 +113,6 @@ fun HomeScreenPreview() {
 				navigateToDetail = {
 				
 				},
-				navigateToSearch = { _, _ ->
-				
-				},
 				navigateToCategory = {}
 			)
 		}
@@ -118,7 +121,9 @@ fun HomeScreenPreview() {
 
 @Composable
 fun Banner(
-	modifier: Modifier = Modifier
+	modifier: Modifier = Modifier,
+	value: String,
+	onValueChange: (String) -> Unit
 ) {
 	Box(modifier = modifier) {
 		Image(
@@ -127,7 +132,7 @@ fun Banner(
 			contentScale = ContentScale.Crop,
 			modifier = Modifier.height(220.dp)
 		)
-		SearchBar()
+		SearchBar(value = value, onValueChange = onValueChange)
 	}
 }
 
@@ -165,7 +170,7 @@ fun CategoryRowPreview() {
 
 @Composable
 fun RecommendedRow(
-	listRecipes: List<Recipe>,
+	listRecipes: List<RecipeData>,
 	modifier: Modifier = Modifier,
 	navigateToDetail: (String) -> Any,
 ) {
@@ -182,8 +187,7 @@ fun RecommendedRow(
 					.width(180.dp),
 				title = it.title,
 				photoUrl = it.image,
-				tags = it.tags,
-				description = it.description,
+				tags = it.recipeCategory,
 				enableTags = false,
 				onClick = { navigateToDetail(it.id) }
 			)
@@ -199,7 +203,7 @@ fun RecommendedRowPreview() {
 			color = MaterialTheme.colorScheme.background
 		) {
 			RecommendedRow(
-				listRecipes = FakeRecipes.dummyRecipes,
+				listRecipes = FakeRecipes.dummyRecipeData,
 				navigateToDetail = {
 				
 				},

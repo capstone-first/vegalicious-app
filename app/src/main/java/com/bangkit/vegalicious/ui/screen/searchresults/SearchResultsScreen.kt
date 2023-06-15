@@ -1,6 +1,5 @@
 package com.bangkit.vegalicious.ui.screen.searchresults
 
-import android.os.Bundle
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.vegalicious.components.OutlinedSearchBar
 import com.bangkit.vegalicious.components.RecipeItem
+import com.bangkit.vegalicious.data.remote.response.RecipeResponse
 import com.bangkit.vegalicious.models.Recipe
 import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
@@ -49,7 +49,7 @@ import com.bangkit.vegalicious.utils.ViewModelFactory
 fun SearchResultsScreen(
 	query: String = "",
 	_tags: List<String> = listOf(),
-	onSearch: (String, List<String>) -> Unit,
+	onSearch: (String) -> Unit,
 	viewModel: SearchResultsViewModel = viewModel(
 		factory = ViewModelFactory(
 			Injection.provideRecipeRepository(),
@@ -57,9 +57,8 @@ fun SearchResultsScreen(
 	),
 	navigateToDetail: (String) -> Unit,
 ) {
-	Log.e("SearchResultsScreen", "After search: $query")
+	Log.d("SearchResultsScreen", "After search: $query")
 	var input by remember { mutableStateOf(query) }
-	var tags by remember { mutableStateOf(_tags) }
 	Scaffold(
 		topBar = { AppBar(
 			input = input,
@@ -68,7 +67,7 @@ fun SearchResultsScreen(
 			},
 			onSearch = {
 				Log.d("Before", "Before search: $input")
-				onSearch(input, tags)
+				onSearch(input)
 			}
 		) }
 	) { paddingValues ->
@@ -91,23 +90,22 @@ fun SearchResultsScreen(
 					color = MaterialTheme.colorScheme.primary,
 					modifier = Modifier.padding(top = 8.dp),
 				)
-				Bundle()
+//				Bundle()
 			}
 			
 			
 			when(uiStateRecipe) {
 				is UiState.Loading -> {
-					viewModel.searchRecipes(input, tags)
+					viewModel.getRecipes(input)
 				}
 				is UiState.Success -> {
-					items((uiStateRecipe as UiState.Success<List<Recipe>>).data) {
+					items((uiStateRecipe as UiState.Success<RecipeResponse>).data.data) {
 						RecipeItem(
 							modifier = Modifier
 								.width(200.dp),
 							title = it.title,
 							photoUrl = it.image,
-							tags = it.tags,
-							description = it.description,
+							tags = it.recipeCategory,
 							enableTags = true,
 							onClick = { navigateToDetail(it.id) }
 						)
@@ -185,7 +183,7 @@ fun SearchResultsScreenPreview() {
 			modifier = Modifier.fillMaxSize(),
 			color = MaterialTheme.colorScheme.background
 		) {
-			SearchResultsScreen("Resep", listOf(), {_, _ ->}, navigateToDetail = {})
+			SearchResultsScreen("Resep", listOf(), {_ -> }, navigateToDetail = {})
 		}
 	}
 }

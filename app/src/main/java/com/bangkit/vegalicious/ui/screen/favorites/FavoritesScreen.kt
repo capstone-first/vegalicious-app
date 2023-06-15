@@ -97,14 +97,14 @@ fun FavoritesScreen(
 							title = it.favoriteRecipeEntity.title,
 							photoUrl = it.favoriteRecipeEntity.image
 								?: "https://st.depositphotos.com/2934765/53192/v/600/depositphotos_531920820-stock-illustration-photo-available-vector-icon-default.jpg",
-							tags = it.tags.let { tags -> //Move to a function *edit
-								val tagsString: MutableList<String> = mutableListOf()
-								tags.forEach { tag ->
-									tagsString.add(tag.tagText)
-								}
-								tagsString
-							},
-							description = it.favoriteRecipeEntity.description,
+							tags = listOf(),
+//							tags = it.tags.let { tags -> //Move to a function *edit
+//								val tagsString: MutableList<String> = mutableListOf()
+//								tags.forEach { tag ->
+//									tagsString.add(tag.tagText)
+//								}
+//								tagsString
+//							},
 							enableTags = true,
 							onClick = { navigateToDetail(it.favoriteRecipeEntity.id) },
 							enableFavorite = true

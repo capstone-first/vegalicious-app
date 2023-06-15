@@ -1,5 +1,6 @@
 package com.bangkit.vegalicious.ui.screen.auth.signup
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,21 +22,30 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.components.AnnotatedClickableText
+import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
+import com.bangkit.vegalicious.utils.StoreUserData
+import com.bangkit.vegalicious.utils.ViewModelFactory
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,10 +53,42 @@ import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 fun SignupScreen(
 	modifier: Modifier = Modifier,
 	navigateToLogin: () -> Unit,
+	navigateToHome: () -> Unit,
+	signupViewModel: SignupViewModel = viewModel(
+		factory = ViewModelFactory()
+	)
 ) {
+	var nameInput by remember { mutableStateOf("") }
 	var emailInput by remember { mutableStateOf("") }
 	var passwordInput by remember { mutableStateOf("")}
 	var confirmPasswordInput by remember { mutableStateOf("")}
+	
+	val context = LocalContext.current
+	val scope = rememberCoroutineScope()
+	val dataStore = StoreUserData(context)
+	
+	signupViewModel.uiStateRegister.collectAsState(initial = UiState.Loading).value.let { uiState ->
+		when(uiState) {
+			is UiState.Loading -> {
+				// TODO: tampilkan loading
+			}
+			is UiState.Success -> {
+				if(signupViewModel.isDone) {
+					Log.d("SignUp", "Running UiState.Success")
+					LaunchedEffect(Unit) {
+						scope.launch {
+							dataStore.saveAuthKey(uiState.data.accessToken)
+						}
+					}
+					navigateToHome()
+					signupViewModel.isDone = false
+				}
+			}
+			is UiState.Error -> {
+				// TODO: tampilkan pesan error
+			}
+		}
+	}
 	
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
@@ -57,7 +99,9 @@ fun SignupScreen(
 			painter = painterResource(id = R.drawable.signupimage),
 			contentDescription = "Sign Up image",
 			contentScale = ContentScale.Crop,
-			modifier = Modifier.height(206.dp).padding(top = 32.dp)
+			modifier = Modifier
+				.height(206.dp)
+				.padding(top = 32.dp)
 		)
 		Text(
 			text = "Sign Up",
@@ -70,6 +114,26 @@ fun SignupScreen(
 			style = MaterialTheme.typography.bodySmall,
 			color = MaterialTheme.colorScheme.onSurfaceVariant,
 			modifier = Modifier.fillMaxWidth()
+		)
+		TextField(
+			value = nameInput,
+			onValueChange = { nameInput = it },
+			trailingIcon = {
+				if(nameInput.isNotEmpty()) {
+					IconButton(
+						onClick = { nameInput = "" },
+					) {
+						Icon(
+							Icons.Default.Cancel,
+							contentDescription = "Clear email"
+						)
+					}
+				}
+			},
+			modifier = Modifier
+				.fillMaxWidth(),
+			label = { Text("Name")},
+			placeholder = { Text("Your Name")}
 		)
 		TextField(
 			value = emailInput,
@@ -135,7 +199,13 @@ fun SignupScreen(
 			visualTransformation =  PasswordVisualTransformation(),
 			keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
 		)
-		Button(onClick = { /*TODO*/ }, Modifier.width(156.dp)) {
+		Button(
+			onClick = {
+				if(passwordInput == confirmPasswordInput) {
+					signupViewModel.signupUser(emailInput, passwordInput, nameInput)
+				}
+		  	},
+			Modifier.width(156.dp)) {
 			Text("Sign up")
 		}
 		Divider()
@@ -151,7 +221,7 @@ fun SignupScreenPreview() {
 			modifier = Modifier.fillMaxSize(),
 			color = MaterialTheme.colorScheme.background
 		) {
-			SignupScreen(navigateToLogin = {})
+			SignupScreen(navigateToHome = {}, navigateToLogin = {})
 		}
 	}
 }

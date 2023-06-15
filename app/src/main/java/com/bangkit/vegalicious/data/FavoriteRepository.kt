@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModelProvider.NewInstanceFactory.Companion.instanc
 import com.bangkit.vegalicious.data.local.entity.FavoriteRecipeEntity
 import com.bangkit.vegalicious.data.local.entity.TagEntity
 import com.bangkit.vegalicious.data.local.room.*
-import com.bangkit.vegalicious.data.remote.response.RecipeItem
 import com.bangkit.vegalicious.data.remote.retrofit.ApiService
 import com.bangkit.vegalicious.models.Recipe
 

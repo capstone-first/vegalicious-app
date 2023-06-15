@@ -93,6 +93,11 @@ fun VegaliciousApp(
 							popUpTo(Screen.Signup.route) { inclusive = true }
 						}
 					},
+					navigateToHome = {
+						navController.navigate(Screen.Home.route) {
+							popUpTo(Screen.Signup.route) { inclusive = true }
+						}
+					},
 				)
 			}
 			composable(Screen.Home.route) {
@@ -100,9 +105,9 @@ fun VegaliciousApp(
 					navigateToDetail = {
 						navController.navigate(Screen.DetailRecipe.createRoute(it))
 					},
-					navigateToSearch = { query, tags ->
-						navController.navigate(Screen.Search.createSearchRoute(query, tags).also{Log.e("CreateSearchRoute", it) })
-					},
+//					navigateToSearch = { query, tags ->
+//						navController.navigate(Screen.Search.createSearchRoute(query, tags).also{Log.e("CreateSearchRoute", it) })
+//					},
 					navigateToCategory = { tag ->
 						navController.navigate(Screen.Category.createRoute(tag))
 					}
@@ -139,8 +144,8 @@ fun VegaliciousApp(
 				SearchResultsScreen(
 					query = query,
 					_tags = tags,
-					onSearch = { _q, _t ->
-						navController.navigate(Screen.Search.createSearchRoute(_q, _t).also{Log.d("SearchRoute", "Route: $it")})
+					onSearch = { _q ->
+						navController.navigate(Screen.Search.createSearchRoute(_q).also{Log.d("SearchRoute", "Route: $it")})
 					},
 					navigateToDetail = {
 						navController.navigate(Screen.DetailRecipe.createRoute(it))
