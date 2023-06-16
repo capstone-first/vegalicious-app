@@ -5,14 +5,23 @@ Look at the stars, look how they shine for you!
 
 ![The stars shine for you, Bangkit!](https://24.media.tumblr.com/36116ad70f78f76dfcc657ec7b61b843/tumblr_mlorqn2ozA1s5pur0o1_500.gif)
 
+## Available Features
+- Login & Logout
+- Home
+- Search Recipes
+- Recipe Details (With recipe recommendation using the model from ML team)
+- Favorites (Add from Recipe Details, remove from favorites)
+- Profile
+- Category (Show all categories, search categories, top)
+
 ## How to Install
 
-## Android Studio
+### Android Studio
 
     Open Android Studio
     Run using AVD, emulator, or your device
 
-## Install APK
+### Install APK
 
     Download the APK from Releases
     Install it
