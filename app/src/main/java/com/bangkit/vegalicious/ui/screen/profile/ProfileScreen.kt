@@ -2,6 +2,7 @@ package com.bangkit.vegalicious.ui.screen.profile
 
 import android.util.Log
 import android.widget.ProgressBar
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
@@ -40,12 +42,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.bangkit.vegalicious.R
+import com.bangkit.vegalicious.components.SectionText
 import com.bangkit.vegalicious.data.remote.response.UserData
 import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
@@ -90,8 +95,10 @@ fun ProfileScreen(
 			is UiState.Loading -> {
 				Log.d(ProfileScreenObject.PROFILE_SCREEN, "Loading")
 				profileViewModel.getProfile()
-				// TODO: Buat Loading & rapihin button
-				Column() {
+				Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+					.fillMaxWidth()
+					.padding(top = 32.dp)) {
+					CircularProgressIndicator(modifier = Modifier.padding(8.dp))
 					
 					Button(
 						onClick = { onClickLogout() },
@@ -115,12 +122,23 @@ fun ProfileScreen(
 			is UiState.Error -> {
 				Log.d(ProfileScreenObject.PROFILE_SCREEN, uiState.errorMessage)
 				// TODO: Buat pesan error & rapihin button
-				Button(
-					onClick = { onClickLogout() },
-					modifier = Modifier.width(156.dp),
-					colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-				) {
-					Text("Log Out")
+				Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+					.fillMaxWidth()
+					.padding(top = 32.dp)) {
+					Image(
+						painter = painterResource(id = R.drawable.notfound),
+						contentDescription = "NotFound",
+						contentScale = ContentScale.FillHeight,
+						modifier = Modifier.height(206.dp).padding(vertical = 32.dp)
+					)
+					SectionText(title = "Error")
+					Button(
+						onClick = { onClickLogout() },
+						modifier = Modifier.width(156.dp).padding(top = 8.dp),
+						colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+					) {
+						Text("Log Out")
+					}
 				}
 			}
 		}

@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -103,6 +104,7 @@ fun SearchResultsScreen(
 			
 			when(uiStateRecipe) {
 				is UiState.Loading -> {
+					item { CircularProgressIndicator(modifier = Modifier.padding(8.dp)) }
 					viewModel.getRecipes(input)
 				}
 				is UiState.Success -> {

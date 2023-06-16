@@ -9,10 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -62,6 +65,7 @@ fun SignupScreen(
 	var emailInput by remember { mutableStateOf("") }
 	var passwordInput by remember { mutableStateOf("")}
 	var confirmPasswordInput by remember { mutableStateOf("")}
+	var isLoading by remember { mutableStateOf(false)}
 	
 	val context = LocalContext.current
 	val scope = rememberCoroutineScope()
@@ -70,7 +74,12 @@ fun SignupScreen(
 	signupViewModel.uiStateRegister.collectAsState(initial = UiState.Loading).value.let { uiState ->
 		when(uiState) {
 			is UiState.Loading -> {
-				// TODO: tampilkan loading
+				if(isLoading)
+					Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+						.fillMaxWidth()
+						.padding(top = 32.dp)) {
+					CircularProgressIndicator(modifier = Modifier.padding(8.dp))
+				}
 			}
 			is UiState.Success -> {
 				if(signupViewModel.isDone) {
@@ -85,6 +94,7 @@ fun SignupScreen(
 				}
 			}
 			is UiState.Error -> {
+				isLoading = false
 				// TODO: tampilkan pesan error
 			}
 		}
@@ -93,7 +103,9 @@ fun SignupScreen(
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,
 		verticalArrangement = Arrangement.spacedBy(16.dp),
-		modifier = Modifier.padding(horizontal = 16.dp)
+		modifier = Modifier
+			.padding(horizontal = 16.dp)
+			.verticalScroll(rememberScrollState())
 	) {
 		Image(
 			painter = painterResource(id = R.drawable.signupimage),
@@ -204,6 +216,7 @@ fun SignupScreen(
 				if(passwordInput == confirmPasswordInput) {
 					signupViewModel.signupUser(emailInput, passwordInput, nameInput)
 				}
+				isLoading = true
 		  	},
 			Modifier.width(156.dp)) {
 			Text("Sign up")

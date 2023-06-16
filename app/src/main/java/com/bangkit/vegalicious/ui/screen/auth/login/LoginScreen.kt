@@ -13,6 +13,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -59,6 +61,7 @@ fun LoginScreen(
 ) {
 	var emailInput by remember { mutableStateOf("") }
 	var passwordInput by remember { mutableStateOf("")}
+	var isLoading by remember { mutableStateOf(false)}
 	
 	val context = LocalContext.current
 	val scope = rememberCoroutineScope()
@@ -69,7 +72,12 @@ fun LoginScreen(
 	loginViewModel.uiStateLogin.collectAsState(initial = UiState.Loading).value.let {uiState ->
 		when(uiState) {
 			is UiState.Loading -> {
-				// tampilkan loading
+				if(isLoading)
+					Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier
+						.fillMaxWidth()
+						.padding(top = 32.dp)) {
+						CircularProgressIndicator(modifier = Modifier.padding(8.dp))
+					}
 			}
 			is UiState.Success -> {
 				if(loginViewModel.isDone) {
@@ -84,7 +92,7 @@ fun LoginScreen(
 				}
 			}
 			is UiState.Error -> {
-				// tampilkan pesan error
+				isLoading = false
 			}
 		}
 	}
@@ -154,7 +162,12 @@ fun LoginScreen(
 			visualTransformation =  PasswordVisualTransformation(),
 			keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
 		)
-		Button(onClick = { loginViewModel.loginUser(emailInput, passwordInput).also { Log.d("LoginScreen", "calling loginViewModel.loginUser()") } }, Modifier.width(156.dp)) {
+		Button(onClick = {
+				loginViewModel.loginUser(emailInput, passwordInput).also { Log.d("LoginScreen", "calling loginViewModel.loginUser()") }
+				isLoading = true
+			},
+			Modifier.width(156.dp)
+		) {
 			Text("Sign In")
 		}
 		Divider()
