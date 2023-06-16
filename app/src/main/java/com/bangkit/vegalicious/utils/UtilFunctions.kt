@@ -14,3 +14,7 @@ fun calculateBMI(weightKg: Float, heightCm: Float): Pair<Float, String> {
 	
 	return bmi to status
 }
+
+fun decodeSlash(input: String) = input.replace("&&", "/")
+
+fun encodeSlash(input: String): String = input.replace("/", "&&")

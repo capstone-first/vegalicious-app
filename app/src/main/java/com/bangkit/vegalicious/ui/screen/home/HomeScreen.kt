@@ -53,7 +53,8 @@ fun HomeScreen(
 		)
 	),
 	navigateToDetail: (String) -> Unit,
-	navigateToCategory: (String) -> Unit
+	navigateToCategory: (String) -> Unit,
+	navigateToSearchCategory: (String) -> Unit,
 ) {
 	var searchInput by remember { mutableStateOf("") }
 	
@@ -71,7 +72,7 @@ fun HomeScreen(
 					viewModel.getTopCategories()
 				}
 				is UiState.Success -> {
-					CategoryRow(listCategory = uiState.data, navigateToCategory = navigateToCategory)
+					CategoryRow(listCategory = uiState.data, navigateToCategory = navigateToCategory, navigateToSearchCategory = navigateToSearchCategory)
 				}
 				is UiState.Error -> {
 				
@@ -107,7 +108,8 @@ fun HomeScreenPreview() {
 				navigateToDetail = {
 				
 				},
-				navigateToCategory = {}
+				navigateToCategory = {},
+				navigateToSearchCategory = {}
 			)
 		}
 	}
@@ -134,6 +136,7 @@ fun Banner(
 fun CategoryRow(
 	listCategory: List<Category>,
 	navigateToCategory: (String) -> Any,
+	navigateToSearchCategory: (String) -> Any,
 	modifier: Modifier = Modifier
 ) {
 	LazyRow(
@@ -156,7 +159,7 @@ fun CategoryRow(
 				title = "More Categories",
 				photoUrl = "",
 				onClick = {
-//					TODO: Navigate to all categories screen
+					navigateToSearchCategory("")
 				}
 			)
 		}
@@ -167,7 +170,7 @@ fun CategoryRow(
 @Composable
 fun CategoryRowPreview() {
 	VegaliciousTheme {
-		CategoryRow(listCategory = topCategories, {})
+		CategoryRow(listCategory = topCategories, {}, {})
 	}
 }
 

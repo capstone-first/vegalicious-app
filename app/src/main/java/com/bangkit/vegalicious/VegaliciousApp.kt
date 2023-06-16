@@ -33,6 +33,7 @@ import com.bangkit.vegalicious.ui.navigation.Screen
 import com.bangkit.vegalicious.ui.screen.auth.login.LoginScreen
 import com.bangkit.vegalicious.ui.screen.auth.signup.SignupScreen
 import com.bangkit.vegalicious.ui.screen.category.CategoryScreen
+import com.bangkit.vegalicious.ui.screen.category.searchcategory.SearchCategoryResultsScreen
 import com.bangkit.vegalicious.ui.screen.favorites.FavoritesScreen
 import com.bangkit.vegalicious.ui.screen.home.HomeScreen
 import com.bangkit.vegalicious.ui.screen.profile.ProfileScreen
@@ -40,6 +41,8 @@ import com.bangkit.vegalicious.ui.screen.recipedetails.RecipeDetailsScreen
 import com.bangkit.vegalicious.ui.screen.searchresults.SearchResultsScreen
 import com.bangkit.vegalicious.ui.screen.splash.SplashScreen
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
+import com.bangkit.vegalicious.utils.decodeSlash
+import com.bangkit.vegalicious.utils.encodeSlash
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -109,8 +112,11 @@ fun VegaliciousApp(
 //						navController.navigate(Screen.Search.createSearchRoute(query, tags).also{Log.e("CreateSearchRoute", it) })
 //					},
 					navigateToCategory = { tag ->
-						navController.navigate(Screen.Category.createRoute(tag))
-					}
+						navController.navigate(Screen.Category.createRoute(encodeSlash(tag).also { Log.d("TagRoute", it) }))
+					},
+					navigateToSearchCategory = { _q ->
+						navController.navigate(Screen.CategorySearch.createSearchRoute(_q).also{Log.d("CategorySearchRoute", "Route: $it")})
+					},
 				)
 			}
 			composable(
@@ -142,7 +148,7 @@ fun VegaliciousApp(
 				)
 				Log.d("CreateSearchRoute", "Query: $query")
 				SearchResultsScreen(
-					query = query,
+					query = decodeSlash(query),
 					_tags = tags,
 					onSearch = { _q ->
 						navController.navigate(Screen.Search.createSearchRoute(_q).also{Log.d("SearchRoute", "Route: $it")})
@@ -188,6 +194,9 @@ fun VegaliciousApp(
 					navigateBack = {
 						navController.navigateUp()
 					},
+					navigateToDetail = { detailId ->
+						navController.navigate(Screen.DetailRecipe.createRoute(detailId))
+					},
 				)
 			}
 			composable(
@@ -198,10 +207,32 @@ fun VegaliciousApp(
 			) {
 				val tag = it.arguments?.getString("tag") as String
 				CategoryScreen(
-					tag = tag,
+					tag = decodeSlash(tag),
 					navigateToDetail = {
 						navController.navigate(Screen.DetailRecipe.createRoute(it))
 					},
+				)
+			}
+			composable(
+				route = Screen.CategorySearch.route,
+				arguments = listOf(
+					navArgument("q") {
+						type = NavType.StringType
+						defaultValue = ""
+					}
+				)
+			) {
+				val query = it.arguments?.getString("q").toString()
+				Log.d("CreateSearchRoute", "Query: $query")
+				SearchCategoryResultsScreen(
+					query = query.replace("&&", "/"),
+					onSearch = { _q ->
+						navController.navigate(Screen.CategorySearch.createSearchRoute(_q).also{Log.d("SearchRoute", "Route: $it")})
+					},
+					
+					navigateToCategory = { tag ->
+						navController.navigate(Screen.Category.createRoute(tag))
+					}
 				)
 			}
 		}

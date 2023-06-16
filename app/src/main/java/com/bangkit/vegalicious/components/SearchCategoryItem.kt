@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -23,9 +25,9 @@ import coil.compose.AsyncImage
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 
 @Composable
-fun CategoryItem(
+fun SearchCategoryItem(
 	title: String,
-	photoUrl: String = "",
+	id: String,
 	modifier: Modifier = Modifier,
 	onClick: () -> Unit,
 	) {
@@ -35,26 +37,14 @@ fun CategoryItem(
 			.clickable {
 				onClick()
 			}
-			.width(160.dp)
-			.height(80.dp)
+			.fillMaxWidth()
 			.clip(RoundedCornerShape(8.dp))
 			.background(color = MaterialTheme.colorScheme.primary)
+			.padding(8.dp)
 	) {
-		if(!photoUrl.isEmpty()) {
-			AsyncImage(
-				model = photoUrl,
-				contentDescription = null,
-				contentScale = ContentScale.Crop,
-			)
-			Box(
-				modifier = Modifier
-					.fillMaxSize()
-					.background(color = Color.Black.copy(alpha = 0.2f))
-			)
-		}
 		Text(
 			text = title,
-			style = MaterialTheme.typography.headlineSmall.copy(
+			style = MaterialTheme.typography.bodyMedium.copy(
 				fontWeight = FontWeight.Bold
 			),
 			color = Color.White,
@@ -66,11 +56,11 @@ fun CategoryItem(
 
 @Preview
 @Composable
-fun CategoryItemPreview() {
+fun SearchCategoryItemPreview() {
 	VegaliciousTheme {
-		CategoryItem(
+		SearchCategoryItem(
 			"Indian",
-			"https://assets.epicurious.com/photos/63b5b03305dd27a0d03a18a6/1:1/w_1920,c_limit/Jackfruit%20curry-RECIPE.jpg",
+			"1",
 			onClick = {},
 		)
 	}

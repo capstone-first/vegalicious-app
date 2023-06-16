@@ -28,9 +28,6 @@ data class RecipeData(
 	@field:SerializedName("image")
 	val image: String,
 
-	@field:SerializedName("createdAt")
-	val createdAt: String,
-
 	@field:SerializedName("fat")
 	val fat: Int,
 
@@ -48,9 +45,6 @@ data class RecipeData(
 
 	@field:SerializedName("title")
 	val title: String,
-
-	@field:SerializedName("updatedAt")
-	val updatedAt: String,
 	
 	@field:SerializedName("RecipeCategory")
 	val recipeCategory: List<RecipeCategoryItem>,

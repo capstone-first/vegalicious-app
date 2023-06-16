@@ -1,9 +1,11 @@
 package com.bangkit.vegalicious.data.remote.retrofit
 
+import com.bangkit.vegalicious.data.remote.response.CategoryListResponse
 import com.bangkit.vegalicious.data.remote.response.LoginResponse
 import com.bangkit.vegalicious.data.remote.response.ProfileResponse
 import com.bangkit.vegalicious.data.remote.response.RecipeDetailsResponse
 import com.bangkit.vegalicious.data.remote.response.RecipeResponse
+import com.bangkit.vegalicious.data.remote.response.RecommendationResponse
 import com.bangkit.vegalicious.data.remote.response.RegisterResponse
 import retrofit2.http.*
 import retrofit2.Call
@@ -28,12 +30,6 @@ interface ApiService {
 	@GET("/api/profile")
 	fun getProfile(): Call<ProfileResponse>
 	
-	@GET("/api/category")
-	fun getAllCategory()
-	
-	@GET("/api/category")
-	fun getTopCategory() //Belum ada, req dulu
-	
 	@GET("/api/recipe")
 	fun getAllRecipes(
 		@Query("page") page: Int
@@ -56,4 +52,18 @@ interface ApiService {
 		@Field("category") category: String,
 		@Query("page") page: Int
 	): Call<RecipeResponse>
+	
+	@FormUrlEncoded
+	@POST("/api/recipe/recomendation")
+	fun getRecipesRecommendation(
+		@Field("sentence") sentence: String,
+	): Call<RecommendationResponse>
+	
+	@GET("/api/category")
+	fun getAllCategory(): Call<CategoryListResponse>
+	
+	@GET("/api/category/name/{name}")
+	fun getCategoriesByName(
+		@Path("name") name: String,
+	): Call<CategoryListResponse>
 }

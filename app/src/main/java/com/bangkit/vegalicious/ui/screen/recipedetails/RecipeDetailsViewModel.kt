@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bangkit.vegalicious.data.RecipeRepository
 import com.bangkit.vegalicious.data.remote.response.RecipeDetailsResponse
+import com.bangkit.vegalicious.data.remote.response.RecipeResponse
+import com.bangkit.vegalicious.data.remote.response.RecommendationResponse
 import com.bangkit.vegalicious.data.remote.retrofit.ApiConfig
 import com.bangkit.vegalicious.models.Recipe
 import com.bangkit.vegalicious.ui.common.UiState
@@ -21,17 +23,17 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class RecipeDetailsViewModel(private val recipeRepository: RecipeRepository) : ViewModel() {
-	private val _uiState: MutableStateFlow<UiState<Recipe>> = MutableStateFlow(UiState.Loading)
-	
-	val uiState: StateFlow<UiState<Recipe>>
-		get() = _uiState
 	
 	private val _uiStateRecipeDetails: MutableStateFlow<UiState<RecipeDetailsResponse>> = MutableStateFlow(UiState.Loading)
-	
 	val uiStateRecipeDetails: StateFlow<UiState<RecipeDetailsResponse>>
 		get() = _uiStateRecipeDetails
-	
 	var isStartedRecipeDetails by mutableStateOf(false)
+		private set
+	
+	private val _uiStateRecommendations: MutableStateFlow<UiState<RecommendationResponse>> = MutableStateFlow(UiState.Loading)
+	val uiStateRecommendations: StateFlow<UiState<RecommendationResponse>>
+		get() = _uiStateRecommendations
+	var isStartedRecommendations by mutableStateOf(false)
 		private set
 	
 	fun getRecipeById(recipeId: String) {
@@ -62,11 +64,36 @@ class RecipeDetailsViewModel(private val recipeRepository: RecipeRepository) : V
 			}
 			
 		})
-//		TODO: Hapus kalau sudah aman
-//		viewModelScope.launch {
-//			_uiState.value = UiState.Loading
-//			_uiState.value = UiState.Success(recipeRepository.getRecipeById(recipeId)) // Hasil bisa saja null kalau ada error. Jangan lupa cari logikanya.
-//		}
+	}
+	
+	fun getRecommendation(name: String) {
+		isStartedRecommendations = true
+		val client = ApiConfig.getApiService().getRecipesRecommendation(name)
+		client.enqueue(object : Callback<RecommendationResponse> {
+			override fun onResponse(
+				call: Call<RecommendationResponse>,
+				response: Response<RecommendationResponse>
+			) {
+				val responseBody = response.body()
+				if(responseBody?.status == "success") {
+					Log.d(TAG, ON_RESPONSE + responseBody.status)
+					
+					_uiStateRecommendations.value = UiState.Success(responseBody)
+				} else if(responseBody != null) {
+					Log.d(TAG, ON_RESPONSE + responseBody.status)
+					_uiStateRecommendations.value = UiState.Error(responseBody.status)
+				} else {
+					Log.d(TAG, ON_RESPONSE + RESPONSE_NULL)
+					_uiStateRecommendations.value = UiState.Error(RESPONSE_NULL)
+				}
+			}
+			
+			override fun onFailure(call: Call<RecommendationResponse>, t: Throwable) {
+				Log.d(TAG, ON_FAILURE)
+				_uiStateRecommendations.value = UiState.Error(ON_FAILURE)
+			}
+			
+		})
 	}
 	
 	fun saveRecipe() {

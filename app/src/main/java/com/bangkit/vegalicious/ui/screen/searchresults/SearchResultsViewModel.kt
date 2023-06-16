@@ -62,21 +62,6 @@ class SearchResultsViewModel(
 		})
 	}
 	
-	fun searchRecipes(query: String) {
-		
-		isStartedGetRecipes = true
-		
-//		viewModelScope.launch {
-//			recipeRepository.searchRecipes(query)
-//				.catch {
-//					_uiStateRecipe.value = UiState.Error(it.message.toString())
-//				}
-//				.collect {
-//					_uiStateRecipe.value = UiState.Success(it)
-//				}
-//		}
-	}
-	
 	companion object {
 		const val TAG = "SearchResultsViewModel"
 		const val ON_FAILURE = "onFailure"

@@ -63,8 +63,6 @@ object FakeRecipes {
 			fat = 8,
 			sodium = 49,
 			rating = 3,
-			createdAt = "2023-06-12T17:23:37.736Z",
-			updatedAt = "2023-06-13T00:23:35.268Z",
 			recipeCategory = listOf(
 				RecipeCategoryItem(Category("Jackfruit", "1")),
 				RecipeCategoryItem(Category("Curry", "2")),

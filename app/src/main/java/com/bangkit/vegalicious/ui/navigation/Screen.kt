@@ -1,6 +1,7 @@
 package com.bangkit.vegalicious.ui.navigation
 
 import android.util.Log
+import com.bangkit.vegalicious.utils.encodeSlash
 
 sealed class Screen(val route: String) {
 	
@@ -10,7 +11,7 @@ sealed class Screen(val route: String) {
 	object Home : Screen("home")
 	object Search : Screen("search?q={q}&tag1={tag1}&tag2={tag2}&tag3={tag3}") {
 		fun createSearchRoute(query: String, tags: List<String> = listOf()): String {
-			val route = "search?q=$query"
+			val route = "search?q=${encodeSlash(query)}"
 			
 			val sb = StringBuilder().append(route)
 			
@@ -32,7 +33,10 @@ sealed class Screen(val route: String) {
 		fun createRoute(recipeId: String) = "home/$recipeId"
 	}
 	object Category : Screen("category/{tag}") {
-		fun createRoute(tag: String) = "category/$tag"
+		fun createRoute(tag: String) = "category/${encodeSlash(tag).also{ Log.d("Encode", it) } }"
+	}
+	object CategorySearch : Screen("categories?q={q}") {
+		fun createSearchRoute(query: String): String = "categories?q=${encodeSlash(query)}"
 	}
 	
 	companion object {

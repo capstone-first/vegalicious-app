@@ -101,7 +101,9 @@ fun RecipeItem(
 					fontWeight = FontWeight.ExtraBold
 				),
 				modifier = Modifier
-					.padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 4.dp)
+					.padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 4.dp),
+				maxLines = 3,
+				overflow = TextOverflow.Ellipsis
 			)
 			if(enableTags) {
 				LazyRow(

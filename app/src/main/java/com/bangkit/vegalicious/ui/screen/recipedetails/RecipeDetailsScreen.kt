@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -42,11 +47,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.bangkit.vegalicious.R
+import com.bangkit.vegalicious.components.RecipeItem
 import com.bangkit.vegalicious.components.SectionText
 import com.bangkit.vegalicious.data.remote.response.Category
 import com.bangkit.vegalicious.data.remote.response.Direction
 import com.bangkit.vegalicious.data.remote.response.Ingredient
 import com.bangkit.vegalicious.data.remote.response.RecipeCategoryItem
+import com.bangkit.vegalicious.data.remote.response.RecipeData
 import com.bangkit.vegalicious.data.remote.response.RecipeDirectionItem
 import com.bangkit.vegalicious.data.remote.response.RecipeIngredientItem
 import com.bangkit.vegalicious.models.Recipe
@@ -64,6 +71,7 @@ fun RecipeDetailsScreen(
 	),
 	recipeId: String,
 	navigateBack: () -> Unit,
+	navigateToDetail: (String) -> Unit,
 ) {
 	viewModel.uiStateRecipeDetails.collectAsState(initial = UiState.Loading).value.let {
 		when(it) {
@@ -93,6 +101,28 @@ fun RecipeDetailsScreen(
 						)
 						IngredientsRow(data.recipeIngredient)
 						DirectionsRow(data.recipeDirection)
+						
+						viewModel.uiStateRecommendations.collectAsState(initial = UiState.Loading).value.let { inner ->
+							when(inner) {
+								is UiState.Loading -> {
+									viewModel.getRecommendation(data.title)
+								}
+								is UiState.Success -> {
+									if(inner.data.data.isNotEmpty())
+										RecommendedRow(
+											listRecipes = inner.data.data,
+											navigateToDetail = navigateToDetail,
+										)
+									else {
+										Text(text = "No recommendation")
+									}
+									
+								}
+								is UiState.Error -> {
+								
+								}
+							}
+						}
 					}
 				}
 			}
@@ -187,7 +217,7 @@ fun TitleRow (
 						modifier = Modifier
 							.padding(bottom = 4.dp)
 							.clickable {
-							
+								
 							}
 						,
 						colors = CardDefaults.cardColors(
@@ -298,6 +328,42 @@ fun DirectionsRow(directions: List<RecipeDirectionItem>) {
 	}
 }
 
+@Composable
+fun RecommendedRow(
+	listRecipes: List<RecipeData>,
+	modifier: Modifier = Modifier,
+	navigateToDetail: (String) -> Any,
+) {
+	ElevatedCard(
+		modifier = Modifier
+			.fillMaxWidth(),
+		colors = CardDefaults.elevatedCardColors(
+			containerColor = MaterialTheme.colorScheme.background
+		),
+	) {
+		SectionText(title = "Similar Foods", modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp))
+	}
+	LazyHorizontalGrid(
+		modifier = modifier.height(420.dp),
+		rows = GridCells.Fixed(2),
+		horizontalArrangement = Arrangement.spacedBy(16.dp),
+		verticalArrangement = Arrangement.spacedBy(16.dp),
+		contentPadding = PaddingValues(horizontal = 16.dp),
+	) {
+		items(listRecipes) {
+			RecipeItem(
+				modifier = Modifier
+					.width(180.dp),
+				title = it.title,
+				photoUrl = it.image,
+				tags = it.recipeCategory,
+				enableTags = false,
+				onClick = { navigateToDetail(it.id) }
+			)
+		}
+	}
+}
+
 @Preview
 @Composable
 fun RecipeDetailsScreenPreview() {
@@ -308,7 +374,8 @@ fun RecipeDetailsScreenPreview() {
 		) {
 			RecipeDetailsScreen(
 				recipeId = "1",
-				navigateBack = {}
+				navigateBack = {},
+				navigateToDetail = {}
 			)
 		}
 	}
