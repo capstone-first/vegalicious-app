@@ -14,7 +14,7 @@ Look at the stars, look how they shine for you!
 
 ## Install APK
 
-    Download the apik from Releases
+    Download the APK from Releases
     Install it
 
 ## UI & UX Design
