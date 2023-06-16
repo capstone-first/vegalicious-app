@@ -32,9 +32,9 @@ class SearchResultsViewModel(
 		isStartedGetRecipes = true
 		
 		val client = if(query == "") {
-			ApiConfig.getApiService().getRecipesWithPage(1)
+			ApiConfig.getApiService().getAllRecipes(1)
 		} else {
-			ApiConfig.getApiService().getRecipesWithTitle(query, 1)
+			ApiConfig.getApiService().getRecipesByTitle(query, 1)
 		}
 		client.enqueue(object : Callback<RecipeResponse> {
 			override fun onResponse(

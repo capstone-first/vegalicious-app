@@ -1,6 +1,5 @@
 package com.bangkit.vegalicious.ui.screen.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,11 +22,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,15 +36,12 @@ import com.bangkit.vegalicious.components.RecipeItem
 import com.bangkit.vegalicious.components.SearchBar
 import com.bangkit.vegalicious.components.SectionText
 import com.bangkit.vegalicious.data.remote.response.RecipeData
-import com.bangkit.vegalicious.data.remote.response.RecipeResponse
 import com.bangkit.vegalicious.models.Category
 import com.bangkit.vegalicious.models.FakeRecipes
-import com.bangkit.vegalicious.models.Recipe
-import com.bangkit.vegalicious.models.dummyCategories
+import com.bangkit.vegalicious.models.topCategories
 import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 import com.bangkit.vegalicious.utils.Injection
-import com.bangkit.vegalicious.utils.StoreUserData
 import com.bangkit.vegalicious.utils.ViewModelFactory
 
 @Composable
@@ -150,10 +144,19 @@ fun CategoryRow(
 		items(listCategory) { category ->
 			CategoryItem(
 				title = category.title,
-				photoUrl = "https://assets.epicurious.com/photos/63b5b03305dd27a0d03a18a6/1:1/w_1920,c_limit/Jackfruit%20curry-RECIPE.jpg",
+				photoUrl = category.photoUrl,
 				onClick = {
 					val tag = category.title
 					navigateToCategory(tag)
+				}
+			)
+		}
+		item() {
+			CategoryItem(
+				title = "More Categories",
+				photoUrl = "",
+				onClick = {
+//					TODO: Navigate to all categories screen
 				}
 			)
 		}
@@ -164,7 +167,7 @@ fun CategoryRow(
 @Composable
 fun CategoryRowPreview() {
 	VegaliciousTheme {
-		CategoryRow(listCategory = dummyCategories, {})
+		CategoryRow(listCategory = topCategories, {})
 	}
 }
 

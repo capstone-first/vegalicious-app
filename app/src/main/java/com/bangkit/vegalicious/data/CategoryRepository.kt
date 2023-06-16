@@ -1,7 +1,7 @@
 package com.bangkit.vegalicious.data
 
 import com.bangkit.vegalicious.models.Category
-import com.bangkit.vegalicious.models.dummyCategories
+import com.bangkit.vegalicious.models.topCategories
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
@@ -10,7 +10,7 @@ class CategoryRepository {
 	private val categories = mutableListOf<Category>()
 	init {
 		if(categories.isEmpty()) {
-			dummyCategories.forEach {
+			topCategories.forEach {
 				categories.add(it)
 			}
 		}

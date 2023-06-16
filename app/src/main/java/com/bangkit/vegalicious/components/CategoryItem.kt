@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -37,24 +38,28 @@ fun CategoryItem(
 			.width(160.dp)
 			.height(80.dp)
 			.clip(RoundedCornerShape(8.dp))
+			.background(color = MaterialTheme.colorScheme.primary)
 	) {
-		AsyncImage(
-			model = photoUrl,
-			contentDescription = null,
-			contentScale = ContentScale.Crop,
-		)
-		Box(
-			modifier = Modifier
-				.fillMaxSize()
-				.background(color = Color.Black.copy(alpha = 0.2f))
-		)
+		if(!photoUrl.isEmpty()) {
+			AsyncImage(
+				model = photoUrl,
+				contentDescription = null,
+				contentScale = ContentScale.Crop,
+			)
+			Box(
+				modifier = Modifier
+					.fillMaxSize()
+					.background(color = Color.Black.copy(alpha = 0.2f))
+			)
+		}
 		Text(
 			text = title,
 			style = MaterialTheme.typography.headlineSmall.copy(
 				fontWeight = FontWeight.Bold
 			),
 			color = Color.White,
-			modifier = modifier
+			modifier = modifier,
+			textAlign = TextAlign.Center
 		)
 	}
 }

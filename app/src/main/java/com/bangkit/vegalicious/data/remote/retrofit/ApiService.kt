@@ -35,12 +35,12 @@ interface ApiService {
 	fun getTopCategory() //Belum ada, req dulu
 	
 	@GET("/api/recipe")
-	fun getRecipesWithPage(
+	fun getAllRecipes(
 		@Query("page") page: Int
 	): Call<RecipeResponse>
 	
 	@GET("/api/recipe/{title}/find")
-	fun getRecipesWithTitle(
+	fun getRecipesByTitle(
 		@Path("title") title: String,
 		@Query("page") page: Int
 	): Call<RecipeResponse>
@@ -49,4 +49,11 @@ interface ApiService {
 	fun getRecipeDetails(
 		@Path("id") id: String
 	): Call<RecipeDetailsResponse>
+	
+	@FormUrlEncoded
+	@POST("/api/recipe/category")
+	fun getRecipesByCategory(
+		@Field("category") category: String,
+		@Query("page") page: Int
+	): Call<RecipeResponse>
 }

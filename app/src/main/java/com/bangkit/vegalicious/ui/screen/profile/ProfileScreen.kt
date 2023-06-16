@@ -1,6 +1,7 @@
 package com.bangkit.vegalicious.ui.screen.profile
 
 import android.util.Log
+import android.widget.ProgressBar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -89,13 +90,16 @@ fun ProfileScreen(
 			is UiState.Loading -> {
 				Log.d(ProfileScreenObject.PROFILE_SCREEN, "Loading")
 				profileViewModel.getProfile()
-				// TODO: Buat Loading
-				Button(
-					onClick = { onClickLogout() },
-					modifier = Modifier.width(156.dp),
-					colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
-				) {
-					Text("Log Out")
+				// TODO: Buat Loading & rapihin button
+				Column() {
+					
+					Button(
+						onClick = { onClickLogout() },
+						modifier = Modifier.width(156.dp),
+						colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+					) {
+						Text("Log Out")
+					}
 				}
 			}
 			is UiState.Success -> {
@@ -110,7 +114,7 @@ fun ProfileScreen(
 			}
 			is UiState.Error -> {
 				Log.d(ProfileScreenObject.PROFILE_SCREEN, uiState.errorMessage)
-				// TODO: Buat pesan error
+				// TODO: Buat pesan error & rapihin button
 				Button(
 					onClick = { onClickLogout() },
 					modifier = Modifier.width(156.dp),
