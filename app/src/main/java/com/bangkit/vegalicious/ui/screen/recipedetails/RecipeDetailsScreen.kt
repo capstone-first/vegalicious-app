@@ -35,6 +35,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -73,6 +76,8 @@ fun RecipeDetailsScreen(
 	navigateBack: () -> Unit,
 	navigateToDetail: (String) -> Unit,
 ) {
+	val isFavorite by viewModel.isFavorite.collectAsState(initial = false)
+	
 	viewModel.uiStateRecipeDetails.collectAsState(initial = UiState.Loading).value.let {
 		when(it) {
 			is UiState.Loading -> {
@@ -80,6 +85,7 @@ fun RecipeDetailsScreen(
 			}
 			is UiState.Success -> {
 				val data = it.data.data
+				viewModel.checkFavorite(it.data.data.id)
 				Box(
 					contentAlignment = Alignment.TopCenter,
 					modifier = Modifier
@@ -93,7 +99,7 @@ fun RecipeDetailsScreen(
 							.offset(y = 170.dp),
 						verticalArrangement = Arrangement.spacedBy(16.dp),
 					) {
-						TitleRow(data.title, data.recipeCategory)
+						TitleRow(data.title, data.recipeCategory, { if(!isFavorite) viewModel.saveRecipe(data.id) else viewModel.deleteFavorite(data.id)}, isFavorite)
 						NutritionFactsRow(
 							fat = data.fat.toFloat(),
 							calories = data.calories.toFloat(),
@@ -136,6 +142,7 @@ fun RecipeDetailsScreen(
 @Composable
 fun Header(
 	photoUrl: String,
+	onClick: () -> Unit = {}
 ) {
 	Box(
 		contentAlignment = Alignment.TopStart
@@ -147,7 +154,7 @@ fun Header(
 			modifier = Modifier.height(210.dp)
 		)
 		IconButton(
-			onClick = { /*TODO*/ },
+			onClick = {  },
 //				modifier = Modifier
 //					.clip(CircleShape)
 		) {
@@ -166,7 +173,9 @@ fun Header(
 @Composable
 fun TitleRow (
 	title: String,
-	tags: List<RecipeCategoryItem> = listOf()
+	tags: List<RecipeCategoryItem> = listOf(),
+	onClick: () -> Unit = {},
+	isFavorite: Boolean = false,
 ){
 	ElevatedCard(
 		modifier = Modifier
@@ -192,8 +201,8 @@ fun TitleRow (
 					)
 				)
 				IconButton(
-					onClick = { /*TODO*/ },
-					colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.surface),
+					onClick = { onClick() },
+					colors = IconButtonDefaults.filledIconButtonColors(containerColor = if(!isFavorite) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.primary),
 					modifier = Modifier
 						.padding(4.dp)
 						.clip(CircleShape)
@@ -203,7 +212,8 @@ fun TitleRow (
 						painterResource(id = R.drawable.bookmark_border),
 						contentDescription = null,
 						modifier = Modifier
-							.size(24.dp)
+							.size(24.dp),
+						tint = if(isFavorite) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 					)
 				}
 			}

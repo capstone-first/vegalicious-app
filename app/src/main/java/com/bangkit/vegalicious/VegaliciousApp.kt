@@ -117,6 +117,9 @@ fun VegaliciousApp(
 					navigateToSearchCategory = { _q ->
 						navController.navigate(Screen.CategorySearch.createSearchRoute(_q).also{Log.d("CategorySearchRoute", "Route: $it")})
 					},
+					navigateToSearch = { _q ->
+						navController.navigate(Screen.Search.createSearchRoute(_q).also{Log.d("SearchRoute", "Route: $it")})
+					}
 				)
 			}
 			composable(

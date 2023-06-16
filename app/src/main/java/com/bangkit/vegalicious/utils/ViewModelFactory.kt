@@ -34,7 +34,7 @@ class ViewModelFactory(
 		else if(modelClass.isAssignableFrom(RecipeDetailsViewModel::class.java))
 			return RecipeDetailsViewModel(recipeRepository!!) as T
 		else if(modelClass.isAssignableFrom(FavoritesViewModel::class.java))
-			return FavoritesViewModel(favoriteRepository!!) as T
+			return FavoritesViewModel() as T
 		else if(modelClass.isAssignableFrom(ProfileViewModel::class.java))
 			return ProfileViewModel(profileRepository!!) as T
 		else if(modelClass.isAssignableFrom(LoginViewModel::class.java))

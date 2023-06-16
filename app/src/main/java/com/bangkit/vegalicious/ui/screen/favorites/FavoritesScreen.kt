@@ -1,11 +1,11 @@
 package com.bangkit.vegalicious.ui.screen.favorites
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -19,7 +19,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -29,23 +28,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.components.RecipeItem
 import com.bangkit.vegalicious.components.SectionText
-import com.bangkit.vegalicious.data.local.entity.RecipeAndTag
-import com.bangkit.vegalicious.models.Recipe
+import com.bangkit.vegalicious.data.remote.response.GetBookmarkResponse
 import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
-import com.bangkit.vegalicious.utils.Injection
 import com.bangkit.vegalicious.utils.ViewModelFactory
 
 @Composable
 fun FavoritesScreen(
 	viewModel: FavoritesViewModel = viewModel(
-		factory = ViewModelFactory(
-			favoriteRepository = Injection.provideFavoriteRepository(LocalContext.current),
-		)
+		factory = ViewModelFactory()
 	),
 	navigateToDetail: (String) -> Unit = {},
 ) {
-	val uiStateFavorite by remember { viewModel.uiStateFavorite }.collectAsState(initial = UiState.Loading)
+	val uiStateFavorite by viewModel.uiStateFavorite .collectAsState(initial = UiState.Loading)
 	
 	LazyVerticalGrid(
 		columns = GridCells.Fixed(2),
@@ -61,10 +56,10 @@ fun FavoritesScreen(
 		when(uiStateFavorite) {
 			is UiState.Loading -> {
 				viewModel.getFavorites()
+				Log.d("FavoritesScreen Data", "Loading")
 			}
 			is UiState.Success -> {
-				val data = (uiStateFavorite as UiState.Success<List<RecipeAndTag>>).data
-				if(data.isEmpty()) {
+				if((uiStateFavorite as UiState.Success<GetBookmarkResponse>).data.data.isEmpty()) {
 					item(span = { GridItemSpan(maxCurrentLineSpan) }) {
 						Image(
 							painter = painterResource(id = R.drawable.notfound),
@@ -77,37 +72,24 @@ fun FavoritesScreen(
 					}
 					item(span = { GridItemSpan(maxCurrentLineSpan) }) {
 						Text(
-							text = "Data Not Found",
+							text = "You have no favorite recipe!",
 							style = MaterialTheme.typography.titleSmall,
 							textAlign = TextAlign.Center
 						)
 					}
 				} else {
-					item(span = { GridItemSpan(maxCurrentLineSpan) }) {
-						Text(
-							text = "Data is not empty",
-							style = MaterialTheme.typography.titleSmall,
-							textAlign = TextAlign.Center
-						)
-					}
-					items(data) {
+					items((uiStateFavorite as UiState.Success<GetBookmarkResponse>).data.data) {
 						RecipeItem(
-							modifier = Modifier
-								.width(200.dp),
-							title = it.favoriteRecipeEntity.title,
-							photoUrl = it.favoriteRecipeEntity.image
-								?: "https://st.depositphotos.com/2934765/53192/v/600/depositphotos_531920820-stock-illustration-photo-available-vector-icon-default.jpg",
+							title = it.recipe.title,
+							photoUrl = it.recipe.image,
 							tags = listOf(),
-//							tags = it.tags.let { tags -> //Move to a function *edit
-//								val tagsString: MutableList<String> = mutableListOf()
-//								tags.forEach { tag ->
-//									tagsString.add(tag.tagText)
-//								}
-//								tagsString
-//							},
-							enableTags = true,
-							onClick = { navigateToDetail(it.favoriteRecipeEntity.id) },
-							enableFavorite = true
+							enableTags = false,
+							onClick = { navigateToDetail(it.recipe.id) },
+							enableFavorite = true,
+							isFavorite = true,
+							onFavoriteClick = {
+								viewModel.deleteFavorite(it.id)
+							}
 						)
 					}
 				}

@@ -1,10 +1,12 @@
 package com.bangkit.vegalicious.ui.screen.searchresults
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,12 +32,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.components.OutlinedSearchBar
 import com.bangkit.vegalicious.components.RecipeItem
+import com.bangkit.vegalicious.data.remote.response.GetBookmarkResponse
 import com.bangkit.vegalicious.data.remote.response.RecipeResponse
 import com.bangkit.vegalicious.models.Recipe
 import com.bangkit.vegalicious.ui.common.UiState
@@ -93,21 +100,42 @@ fun SearchResultsScreen(
 			}
 			
 			
+			
 			when(uiStateRecipe) {
 				is UiState.Loading -> {
 					viewModel.getRecipes(input)
 				}
 				is UiState.Success -> {
-					items((uiStateRecipe as UiState.Success<RecipeResponse>).data.data) {
-						RecipeItem(
-							modifier = Modifier
-								.width(200.dp),
-							title = it.title,
-							photoUrl = it.image,
-							tags = it.recipeCategory,
-							enableTags = true,
-							onClick = { navigateToDetail(it.id) }
-						)
+					if((uiStateRecipe as UiState.Success<RecipeResponse>).data.data.isEmpty()) {
+						item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+							Image(
+								painter = painterResource(id = R.drawable.notfound),
+								contentDescription = "NotFound",
+								contentScale = ContentScale.FillHeight,
+								modifier = Modifier
+									.height(206.dp)
+									.padding(vertical = 32.dp)
+							)
+						}
+						item(span = { GridItemSpan(maxCurrentLineSpan) }) {
+							Text(
+								text = "Recipe is not found!",
+								style = MaterialTheme.typography.titleSmall,
+								textAlign = TextAlign.Center
+							)
+						}
+					} else {
+						items((uiStateRecipe as UiState.Success<RecipeResponse>).data.data) {
+							RecipeItem(
+								modifier = Modifier
+									.width(200.dp),
+								title = it.title,
+								photoUrl = it.image,
+								tags = it.recipeCategory,
+								enableTags = true,
+								onClick = { navigateToDetail(it.id) }
+							)
+						}
 					}
 				}
 				is UiState.Error -> {

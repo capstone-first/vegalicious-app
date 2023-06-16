@@ -35,16 +35,22 @@ import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 fun SearchBar(
 	modifier: Modifier = Modifier,
 	value: String,
-	onValueChange: (String) -> Unit
+	onValueChange: (String) -> Unit,
+	onClick: () -> Unit
 ) {
 	TextField(
 		value = value,
 		onValueChange = { onValueChange(it) },
-		leadingIcon = {
-			Icon(
-				imageVector = Icons.Default.Search,
-				contentDescription = null,
-			)
+		trailingIcon = {
+			IconButton(
+				onClick = { onClick() },
+				Modifier.padding(0.dp)
+			) {
+				Icon(
+					imageVector = Icons.Default.Search,
+					contentDescription = null,
+				)
+			}
 		},
 		colors = TextFieldDefaults.textFieldColors(
 			containerColor = MaterialTheme.colorScheme.surface,
@@ -155,6 +161,6 @@ fun OutlinedSearchBar2(
 @Composable
 fun SearchBarPreview() {
 	VegaliciousTheme() {
-		SearchBar(value = "", onValueChange = {_ -> })
+		SearchBar(value = "", onValueChange = {_ -> }, onClick = {})
 	}
 }

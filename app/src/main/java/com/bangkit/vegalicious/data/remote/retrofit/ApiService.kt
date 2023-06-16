@@ -1,6 +1,10 @@
 package com.bangkit.vegalicious.data.remote.retrofit
 
 import com.bangkit.vegalicious.data.remote.response.CategoryListResponse
+import com.bangkit.vegalicious.data.remote.response.CheckBookmarkResponse
+import com.bangkit.vegalicious.data.remote.response.CreateBookmarkResponse
+import com.bangkit.vegalicious.data.remote.response.DeleteBookmarkResponse
+import com.bangkit.vegalicious.data.remote.response.GetBookmarkResponse
 import com.bangkit.vegalicious.data.remote.response.LoginResponse
 import com.bangkit.vegalicious.data.remote.response.ProfileResponse
 import com.bangkit.vegalicious.data.remote.response.RecipeDetailsResponse
@@ -66,4 +70,24 @@ interface ApiService {
 	fun getCategoriesByName(
 		@Path("name") name: String,
 	): Call<CategoryListResponse>
+	
+	@GET("/api/bookmark")
+	fun getFavorites(): Call<GetBookmarkResponse>
+	
+	@FormUrlEncoded
+	@POST("/api/bookmark")
+	fun postFavorites(
+		@Field("recipeId") recipeId: String,
+	): Call<CreateBookmarkResponse>
+	
+	@DELETE("/api/bookmark/{id}")
+	fun deleteFavorite(
+		@Path("id") id: String,
+	): Call<DeleteBookmarkResponse>
+	
+	@FormUrlEncoded
+	@POST("api/bookmark/check")
+	fun checkBookmark(
+		@Field("recipeId") recipeId: String,
+	): Call<CheckBookmarkResponse>
 }

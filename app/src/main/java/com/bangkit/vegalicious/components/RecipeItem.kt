@@ -53,7 +53,9 @@ fun RecipeItem(
 	modifier: Modifier = Modifier,
 	enableTags: Boolean,
 	enableFavorite: Boolean = false,
+	isFavorite: Boolean = false,
 	onClick: () -> Unit = {},
+	onFavoriteClick: () -> Unit = {},
 ) {
 	ElevatedCard(
 		modifier = modifier.height((if(enableTags)220 else 200).dp),
@@ -74,8 +76,13 @@ fun RecipeItem(
 			)
 			if(enableFavorite) {
 				IconButton(
-					onClick = { /*TODO*/ },
-					colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.surface),
+					onClick = { onFavoriteClick() },
+					colors = if(isFavorite) {
+						IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.surface)
+					} else {
+						IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
+						
+					},
 					modifier = Modifier
 						.padding(4.dp)
 						.clip(CircleShape)

@@ -55,6 +55,7 @@ fun HomeScreen(
 	navigateToDetail: (String) -> Unit,
 	navigateToCategory: (String) -> Unit,
 	navigateToSearchCategory: (String) -> Unit,
+	navigateToSearch: (String) -> Unit,
 ) {
 	var searchInput by remember { mutableStateOf("") }
 	
@@ -63,7 +64,9 @@ fun HomeScreen(
 			.verticalScroll(rememberScrollState())
 			.padding(bottom = 16.dp)
 	) {
-		Banner(value = searchInput, onValueChange = { newValue -> searchInput = newValue})
+		Banner(value = searchInput, onValueChange = { newValue -> searchInput = newValue}, onIconClicked = {
+			navigateToSearch(searchInput)
+		})
 		SectionText(title = stringResource(id = R.string.main_category_section))
 		
 		viewModel.uiStateCategory.collectAsState(initial = UiState.Loading).value.let { uiState ->
@@ -109,7 +112,8 @@ fun HomeScreenPreview() {
 				
 				},
 				navigateToCategory = {},
-				navigateToSearchCategory = {}
+				navigateToSearchCategory = {},
+				navigateToSearch = {}
 			)
 		}
 	}
@@ -119,7 +123,8 @@ fun HomeScreenPreview() {
 fun Banner(
 	modifier: Modifier = Modifier,
 	value: String,
-	onValueChange: (String) -> Unit
+	onValueChange: (String) -> Unit,
+	onIconClicked: () -> Unit
 ) {
 	Box(modifier = modifier) {
 		Image(
@@ -128,7 +133,7 @@ fun Banner(
 			contentScale = ContentScale.Crop,
 			modifier = Modifier.height(220.dp)
 		)
-		SearchBar(value = value, onValueChange = onValueChange)
+		SearchBar(value = value, onValueChange = onValueChange, onClick = onIconClicked)
 	}
 }
 
