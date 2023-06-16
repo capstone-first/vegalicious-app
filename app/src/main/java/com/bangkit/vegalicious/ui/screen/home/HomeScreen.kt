@@ -52,7 +52,6 @@ import com.bangkit.vegalicious.utils.ViewModelFactory
 fun HomeScreen(
 	viewModel: HomeViewModel = viewModel(
 		factory = ViewModelFactory(
-			Injection.provideRecipeRepository(),
 			Injection.provideCategoryRepository()
 		)
 	),

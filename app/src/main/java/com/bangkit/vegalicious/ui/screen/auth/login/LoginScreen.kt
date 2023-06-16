@@ -13,7 +13,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -66,8 +65,6 @@ fun LoginScreen(
 	val context = LocalContext.current
 	val scope = rememberCoroutineScope()
 	val dataStore = StoreUserData(context)
-	
-//	val auth = dataStore.getAuthKey.collectAsState(initial = "").also { Log.d("LoginAuth", "${it.value}") }
 	
 	loginViewModel.uiStateLogin.collectAsState(initial = UiState.Loading).value.let {uiState ->
 		when(uiState) {

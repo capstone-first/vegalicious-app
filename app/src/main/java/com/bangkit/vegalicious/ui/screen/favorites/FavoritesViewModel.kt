@@ -1,9 +1,6 @@
 package com.bangkit.vegalicious.ui.screen.favorites
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.bangkit.vegalicious.data.remote.response.DeleteBookmarkResponse
 import com.bangkit.vegalicious.data.remote.response.GetBookmarkResponse

@@ -7,7 +7,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bangkit.vegalicious.data.CategoryRepository
-import com.bangkit.vegalicious.data.RecipeRepository
 import com.bangkit.vegalicious.data.remote.response.RecipeResponse
 import com.bangkit.vegalicious.data.remote.retrofit.ApiConfig
 import com.bangkit.vegalicious.models.Category
@@ -21,7 +20,6 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class HomeViewModel(
-	private val recipeRepository: RecipeRepository,
 	private val categoryRepository: CategoryRepository
 ) : ViewModel() {
 	

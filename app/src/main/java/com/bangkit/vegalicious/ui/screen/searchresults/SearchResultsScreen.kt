@@ -43,12 +43,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.components.OutlinedSearchBar
 import com.bangkit.vegalicious.components.RecipeItem
-import com.bangkit.vegalicious.data.remote.response.GetBookmarkResponse
 import com.bangkit.vegalicious.data.remote.response.RecipeResponse
-import com.bangkit.vegalicious.models.Recipe
 import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
-import com.bangkit.vegalicious.utils.Injection
 import com.bangkit.vegalicious.utils.ViewModelFactory
 
 
@@ -59,9 +56,7 @@ fun SearchResultsScreen(
 	_tags: List<String> = listOf(),
 	onSearch: (String) -> Unit,
 	viewModel: SearchResultsViewModel = viewModel(
-		factory = ViewModelFactory(
-			Injection.provideRecipeRepository(),
-		)
+		factory = ViewModelFactory()
 	),
 	navigateToDetail: (String) -> Unit,
 ) {
@@ -167,13 +162,6 @@ fun AppBar(
 				modifier = Modifier.padding(start = 8.dp, end = 16.dp),
 				verticalAlignment = Alignment.CenterVertically
 					) {
-				IconButton(
-					onClick = {},
-					Modifier.padding(0.dp)
-				) {
-					Icon(Icons.Default.ArrowBack, contentDescription = null,
-						Modifier.size(28.dp))
-				}
 				OutlinedSearchBar(
 					value = input,
 					onValueChange = onValueChange,

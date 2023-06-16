@@ -1,7 +1,6 @@
 package com.bangkit.vegalicious.ui.screen.profile
 
 import android.util.Log
-import android.widget.ProgressBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -55,7 +54,6 @@ import com.bangkit.vegalicious.data.remote.response.UserData
 import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 import com.bangkit.vegalicious.ui.theme.overweight
-import com.bangkit.vegalicious.utils.Injection
 import com.bangkit.vegalicious.utils.StoreUserData
 import com.bangkit.vegalicious.utils.ViewModelFactory
 import kotlinx.coroutines.launch
@@ -63,9 +61,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileScreen(
 	profileViewModel: ProfileViewModel = viewModel(
-		factory = ViewModelFactory(
-			profileRepository = Injection.provideProfileRepository()
-		)
+		factory = ViewModelFactory()
 	),
 	onClickLogout: () -> Unit = {},
 	username: String,

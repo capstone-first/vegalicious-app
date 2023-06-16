@@ -1,10 +1,8 @@
 package com.bangkit.vegalicious.ui.screen.category
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,11 +29,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.vegalicious.components.RecipeItem
 import com.bangkit.vegalicious.components.SectionText
 import com.bangkit.vegalicious.data.remote.response.RecipeResponse
-import com.bangkit.vegalicious.models.FakeRecipes.dummyRecipes
 import com.bangkit.vegalicious.ui.common.UiState
-import com.bangkit.vegalicious.ui.screen.searchresults.SearchResultsViewModel
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
-import com.bangkit.vegalicious.utils.Injection
 import com.bangkit.vegalicious.utils.ViewModelFactory
 
 @Composable
@@ -62,17 +57,7 @@ fun CategoryScreen(
 				verticalAlignment = Alignment.CenterVertically,
 				modifier = Modifier.padding(top = 16.dp),
 			) {
-				IconButton(
-					onClick = {},
-					Modifier.padding(0.dp)
-				) {
-					Icon(
-						Icons.Default.ArrowBack, contentDescription = null,
-						Modifier
-							.size(28.dp)
-							.padding(horizontal = 0.dp))
-				}
-				SectionText(title = "Category: " + tag, modifier = Modifier.padding(horizontal = 0.dp))
+				SectionText(title = "Category: $tag", modifier = Modifier.padding(horizontal = 0.dp))
 			}
 		}
 		when(uiStateRecipe) {

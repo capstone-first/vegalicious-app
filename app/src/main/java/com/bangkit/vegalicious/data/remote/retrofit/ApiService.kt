@@ -11,8 +11,8 @@ import com.bangkit.vegalicious.data.remote.response.RecipeDetailsResponse
 import com.bangkit.vegalicious.data.remote.response.RecipeResponse
 import com.bangkit.vegalicious.data.remote.response.RecommendationResponse
 import com.bangkit.vegalicious.data.remote.response.RegisterResponse
-import retrofit2.http.*
 import retrofit2.Call
+import retrofit2.http.*
 
 interface ApiService {
 	

@@ -5,11 +5,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.bangkit.vegalicious.data.ProfileRepository
 import com.bangkit.vegalicious.data.remote.response.ProfileResponse
 import com.bangkit.vegalicious.data.remote.retrofit.ApiConfig
 import com.bangkit.vegalicious.ui.common.UiState
-import com.bangkit.vegalicious.ui.screen.auth.login.LoginViewModel
 import com.bangkit.vegalicious.utils.calculateBMI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,15 +16,12 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class ProfileViewModel(
-	private val profileRepository: ProfileRepository,
 ) : ViewModel() {
 	
 	private val _uiState: MutableStateFlow<UiState<ProfileResponse>> = MutableStateFlow(UiState.Loading)
 	val uiState: StateFlow<UiState<ProfileResponse>>
 		get() = _uiState
-	
-	var loadingState by mutableStateOf(false)
-		private set
+
 	
 	var bmiState by mutableStateOf(0f to "Unknown")
 	

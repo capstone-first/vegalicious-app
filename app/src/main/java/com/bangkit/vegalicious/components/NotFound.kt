@@ -20,7 +20,6 @@ import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 @Composable
 fun NotFound(
 	imageId: Int = R.drawable.notfound,
-	text: String = "Data Not Found"
 ) {
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,

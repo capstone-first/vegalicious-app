@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
@@ -38,8 +37,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -54,25 +51,18 @@ import coil.compose.AsyncImage
 import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.components.RecipeItem
 import com.bangkit.vegalicious.components.SectionText
-import com.bangkit.vegalicious.data.remote.response.Category
-import com.bangkit.vegalicious.data.remote.response.Direction
-import com.bangkit.vegalicious.data.remote.response.Ingredient
 import com.bangkit.vegalicious.data.remote.response.RecipeCategoryItem
 import com.bangkit.vegalicious.data.remote.response.RecipeData
 import com.bangkit.vegalicious.data.remote.response.RecipeDirectionItem
 import com.bangkit.vegalicious.data.remote.response.RecipeIngredientItem
-import com.bangkit.vegalicious.models.Recipe
 import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
-import com.bangkit.vegalicious.utils.Injection
 import com.bangkit.vegalicious.utils.ViewModelFactory
 
 @Composable
 fun RecipeDetailsScreen(
 	viewModel: RecipeDetailsViewModel = viewModel(
-		factory = ViewModelFactory(
-			Injection.provideRecipeRepository()
-		)
+		factory = ViewModelFactory()
 	),
 	recipeId: String,
 	navigateBack: () -> Unit,

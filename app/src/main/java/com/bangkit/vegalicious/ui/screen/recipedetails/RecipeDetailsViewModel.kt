@@ -5,29 +5,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.bangkit.vegalicious.data.RecipeRepository
 import com.bangkit.vegalicious.data.remote.response.CheckBookmarkResponse
 import com.bangkit.vegalicious.data.remote.response.CreateBookmarkResponse
 import com.bangkit.vegalicious.data.remote.response.DeleteBookmarkResponse
 import com.bangkit.vegalicious.data.remote.response.RecipeDetailsResponse
-import com.bangkit.vegalicious.data.remote.response.RecipeResponse
 import com.bangkit.vegalicious.data.remote.response.RecommendationResponse
 import com.bangkit.vegalicious.data.remote.retrofit.ApiConfig
-import com.bangkit.vegalicious.models.Recipe
 import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.screen.favorites.FavoritesViewModel
-import com.bangkit.vegalicious.ui.screen.profile.ProfileViewModel
-import com.bangkit.vegalicious.utils.calculateBMI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RecipeDetailsViewModel(private val recipeRepository: RecipeRepository) : ViewModel() {
+class RecipeDetailsViewModel() : ViewModel() {
 	
 	private val _uiStateRecipeDetails: MutableStateFlow<UiState<RecipeDetailsResponse>> = MutableStateFlow(UiState.Loading)
 	val uiStateRecipeDetails: StateFlow<UiState<RecipeDetailsResponse>>

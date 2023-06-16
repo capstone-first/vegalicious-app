@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,11 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bangkit.vegalicious.R
 import com.bangkit.vegalicious.data.remote.retrofit.ApiConfig
-import com.bangkit.vegalicious.ui.navigation.Screen
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
 import com.bangkit.vegalicious.utils.StoreUserData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -38,7 +34,6 @@ fun SplashScreen(navigateToHome: () -> Unit, navigateToLogin: () -> Unit) {
 	
 	LaunchedEffect(Unit) {
 		scope.launch {
-//			dataStore.saveAuthKey("")
 			dataStore.getAuthKey.collectLatest {
 				if(!it.isNullOrEmpty()) {
 					ApiConfig.setAuth(it)
@@ -51,7 +46,6 @@ fun SplashScreen(navigateToHome: () -> Unit, navigateToLogin: () -> Unit) {
 		}
 	}
 	
-//		.also { Log.d("Auth", "${it.value}") }
 	
 	Box(
 		modifier = Modifier

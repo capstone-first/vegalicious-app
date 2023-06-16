@@ -3,14 +3,11 @@ package com.bangkit.vegalicious.ui.screen.category.searchcategory
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
@@ -42,7 +39,6 @@ import com.bangkit.vegalicious.components.SearchCategoryItem
 import com.bangkit.vegalicious.data.remote.response.CategoryListResponse
 import com.bangkit.vegalicious.ui.common.UiState
 import com.bangkit.vegalicious.ui.theme.VegaliciousTheme
-import com.bangkit.vegalicious.utils.Injection
 import com.bangkit.vegalicious.utils.ViewModelFactory
 
 
@@ -53,7 +49,6 @@ fun SearchCategoryResultsScreen(
 	onSearch: (String) -> Unit,
 	viewModel: SearchCategoryViewModel = viewModel(
 		factory = ViewModelFactory(
-			Injection.provideRecipeRepository(),
 		)
 	),
 	navigateToCategory: (String) -> Unit,
@@ -135,13 +130,6 @@ fun AppBar(
 				modifier = Modifier.padding(start = 8.dp, end = 16.dp),
 				verticalAlignment = Alignment.CenterVertically
 					) {
-				IconButton(
-					onClick = {},
-					Modifier.padding(0.dp)
-				) {
-					Icon(Icons.Default.ArrowBack, contentDescription = null,
-						Modifier.size(28.dp))
-				}
 				OutlinedSearchBar(
 					value = input,
 					onValueChange = onValueChange,
