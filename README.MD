@@ -12,7 +12,7 @@ Look at the stars, look how they shine for you!
 - Recipe Details (With recipe recommendation using the model from ML team)
 - Favorites (Add from Recipe Details, remove from favorites)
 - Profile
-- Category (Show all categories, search categories, top)
+- Category (Show all categories, search categories, top categories)
 
 ## How to Install
 
